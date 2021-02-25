@@ -6,14 +6,14 @@ cmake_minimum_required(VERSION 3.19)
 
 project(Blocks LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 20)
+
+set(YTTRIUM_WITH_JPEG ON)
+set(YTTRIUM_WITH_OGGVORBIS OFF)
+
 include(FetchContent)
-
-set(CMAKE_FOLDER "Yttrium")
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 1f1c79b2619168af923632ce8f9d8dee507e284b)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG a0209ba2cfd20a6820848ccb2da2ff01c3463cec)
 FetchContent_MakeAvailable(Yttrium)
-unset(CMAKE_FOLDER)
-
-primal_set_defaults()
 
 add_executable(blocks WIN32
 	src/main.cpp
