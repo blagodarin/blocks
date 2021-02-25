@@ -16,9 +16,34 @@ FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttriu
 FetchContent_MakeAvailable(Yttrium)
 
 add_executable(blocks WIN32
+	src/graphics.cpp
+	src/graphics.hpp
+	src/logic.cpp
+	src/logic.hpp
 	src/main.cpp
 	)
-target_link_libraries(blocks PRIVATE ymain)
+target_link_libraries(blocks PRIVATE yaudio ycore yengine ymain)
 set_target_properties(blocks PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+if(WIN32)
+	target_sources(blocks PRIVATE blocks.rc)
+endif()
+
+file(GLOB _localization_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/data/gui/*.ion)
+add_custom_target(blocks_localization
+	COMMAND ytr data/i18n/en.ion data/gui.ion ${_localization_sources}
+	COMMAND ytr data/i18n/ru.ion data/gui.ion ${_localization_sources}
+	COMMENT "Updating localizations in ${CMAKE_CURRENT_SOURCE_DIR}/data/i18n"
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	BYPRODUCTS
+		${CMAKE_CURRENT_SOURCE_DIR}/data/i18n/en.ion
+		${CMAKE_CURRENT_SOURCE_DIR}/data/i18n/ru.ion
+	)
+
+add_ypack_target(blocks_data
+	INDEX data/index.txt
+	OUTPUT ${PROJECT_BINARY_DIR}/blocks.ypq
+	DEPENDS blocks_localization)
+add_dependencies(blocks blocks_data)
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT blocks)

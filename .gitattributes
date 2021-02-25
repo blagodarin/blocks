@@ -1,0 +1,2 @@
+*.aulos eol=lf
+data/i18n/*.ion eol=lf
