@@ -12,7 +12,7 @@ set(YTTRIUM_WITH_JPEG ON)
 set(YTTRIUM_WITH_OGGVORBIS OFF)
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG e286b4495af80de9f43d58d3d1169bee308b0012)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG ad222a070c615aa8a55f810814c9325b728c796e)
 FetchContent_MakeAvailable(Yttrium)
 
 add_executable(blocks WIN32

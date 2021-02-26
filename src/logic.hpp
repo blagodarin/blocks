@@ -71,14 +71,10 @@ public:
 
 		Field();
 
-		int collapse_full_rows();
+		int collapse();
 		bool is_overflown() const;
 		bool fit(Figure&) const;
 		void put_figure(const Figure&);
-
-	private:
-		void collapse_row(int row);
-		bool is_row_full(int row) const;
 	};
 
 	GameLogic() = default;
