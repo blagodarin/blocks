@@ -12,7 +12,7 @@ set(YTTRIUM_WITH_JPEG ON)
 set(YTTRIUM_WITH_OGGVORBIS OFF)
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG a0209ba2cfd20a6820848ccb2da2ff01c3463cec)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG e286b4495af80de9f43d58d3d1169bee308b0012)
 FetchContent_MakeAvailable(Yttrium)
 
 add_executable(blocks WIN32
@@ -40,10 +40,9 @@ add_custom_target(blocks_localization
 		${CMAKE_CURRENT_SOURCE_DIR}/data/i18n/ru.ion
 	)
 
-add_ypack_target(blocks_data
+yttrium_target_package(blocks
+	OUTPUT blocks.ypq
 	INDEX data/index.txt
-	OUTPUT ${PROJECT_BINARY_DIR}/blocks.ypq
 	DEPENDS blocks_localization)
-add_dependencies(blocks blocks_data)
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT blocks)
