@@ -28,12 +28,22 @@ if(WIN32)
 	target_sources(blocks PRIVATE blocks.rc)
 endif()
 
-file(GLOB _localization_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/data/gui/*.ion)
+set(_localization_sources
+	data/gui.ion
+	data/gui/game.ion
+	data/gui/game_over.ion
+	data/gui/help.ion
+	data/gui/logo.ion
+	data/gui/main_menu.ion
+	data/gui/pause.ion
+	data/gui/play_menu.ion
+	data/gui/statistics.ion
+	)
 add_custom_target(blocks_localization
-	COMMAND ytr data/i18n/en.ion data/gui.ion ${_localization_sources}
-	COMMAND ytr data/i18n/ru.ion data/gui.ion ${_localization_sources}
-	COMMENT "Updating localizations in ${CMAKE_CURRENT_SOURCE_DIR}/data/i18n"
+	COMMAND ytr data/i18n/en.ion ${_localization_sources}
+	COMMAND ytr data/i18n/ru.ion ${_localization_sources}
+	COMMENT "Updating localizations in data/i18n"
+	DEPENDS ${_localization_sources}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	BYPRODUCTS
 		${CMAKE_CURRENT_SOURCE_DIR}/data/i18n/en.ion
