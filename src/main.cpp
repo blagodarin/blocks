@@ -4,7 +4,8 @@
 
 #include "graphics.hpp"
 
-#include <yttrium/application.h>
+#include <yttrium/application/application.h>
+#include <yttrium/application/window.h>
 #include <yttrium/audio/format.h>
 #include <yttrium/audio/manager.h>
 #include <yttrium/audio/utils.h>
@@ -16,6 +17,8 @@
 #include <yttrium/main.h>
 #include <yttrium/renderer/modifiers.h>
 #include <yttrium/renderer/pass.h>
+#include <yttrium/renderer/report.h>
+#include <yttrium/renderer/viewport.h>
 #include <yttrium/resource_loader.h>
 #include <yttrium/script/args.h>
 #include <yttrium/script/context.h>
@@ -23,7 +26,6 @@
 #include <yttrium/storage/source.h>
 #include <yttrium/storage/storage.h>
 #include <yttrium/storage/writer.h>
-#include <yttrium/window.h>
 
 #include <numbers>
 
@@ -187,6 +189,7 @@ int ymain(int, char**)
 	Yt::Application application;
 
 	Yt::Window window{ application };
+	Yt::Viewport viewport{ window };
 
 	Yt::ScriptContext script;
 
@@ -198,7 +201,7 @@ int ymain(int, char**)
 	script.define("move_down", 1, [&logic](const Yt::ScriptCall& call) { logic.set_acceleration(call._args[0]->to_int()); });
 	script.define("move_left", 1, [&logic](const Yt::ScriptCall& call) { logic.set_left_movement(call._args[0]->to_int()); });
 	script.define("move_right", 1, [&logic](const Yt::ScriptCall& call) { logic.set_right_movement(call._args[0]->to_int()); });
-	script.define("screenshot", [&window](const Yt::ScriptCall&) { window.take_screenshot(); });
+	script.define("screenshot", [&viewport](const Yt::ScriptCall&) { viewport.take_screenshot(); });
 	script.define("turn_left", [&logic](const Yt::ScriptCall&) { logic.turn_left(); });
 	script.define("turn_right", [&logic](const Yt::ScriptCall&) { logic.turn_right(); });
 
@@ -214,16 +217,16 @@ int ymain(int, char**)
 
 	const auto audio = tryCreate<Yt::AudioManager>();
 
-	Yt::ResourceLoader resourceLoader{ storage, &window.render_manager() };
+	Yt::ResourceLoader resourceLoader{ storage, &viewport.render_manager() };
 	Yt::Gui gui{ "data/gui.ion", resourceLoader, script, audio };
 	gui.on_quit([&window] { window.close(); });
 
 	window.on_key_event([&gui](const Yt::KeyEvent& event) { gui.process_key_event(event); });
-	window.on_render([&gui](Yt::RenderPass& pass, const Yt::Vector2& cursor, const Yt::RenderReport&) { gui.draw(pass, cursor); });
-	window.on_screenshot([](Yt::Image&& image) { image.save_as_screenshot(Yt::ImageFormat::Jpeg, 90); });
+	viewport.on_render([&gui](Yt::RenderPass& pass, const Yt::Vector2& cursor, const Yt::RenderReport&) { gui.draw(pass, cursor); });
+	viewport.on_screenshot([](Yt::Image&& image) { image.save_as_screenshot(Yt::ImageFormat::Jpeg, 90); });
 	window.on_text_input([&gui](std::string_view text) { gui.process_text_input(text); });
 
-	GameGraphics graphics{ window.render_manager() };
+	GameGraphics graphics{ viewport.render_manager() };
 
 	LogoCanvas logo_canvas{ gui };
 	gui.bind_canvas("logo", logo_canvas);
@@ -240,8 +243,9 @@ int ymain(int, char**)
 		if (const auto image = Yt::Image::load(*source))
 			window.set_icon(*image);
 	window.show();
-	application.run([&script, &gui, &logic](const std::chrono::milliseconds& advance) {
-		if (logic.advance(static_cast<int>(advance.count())))
+	for (Yt::RenderStatistics statistics; application.process_events(); statistics.add_frame())
+	{
+		if (logic.advance(static_cast<int>(statistics.last_frame_duration().count())))
 		{
 			script.set("score", logic.score());
 			script.set("lines", logic.lines());
@@ -249,6 +253,7 @@ int ymain(int, char**)
 			if (logic.has_finished())
 				gui.notify("game_over");
 		}
-	});
+		viewport.render(statistics.current_report(), statistics.previous_report());
+	}
 	return 0;
 }

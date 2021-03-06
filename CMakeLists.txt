@@ -12,7 +12,7 @@ set(YTTRIUM_WITH_JPEG ON)
 set(YTTRIUM_WITH_OGGVORBIS OFF)
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG ad222a070c615aa8a55f810814c9325b728c796e)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 7b4251771830a85863c8203ec17262e27e8b5247)
 FetchContent_MakeAvailable(Yttrium)
 
 add_executable(blocks WIN32
@@ -22,7 +22,7 @@ add_executable(blocks WIN32
 	src/logic.hpp
 	src/main.cpp
 	)
-target_link_libraries(blocks PRIVATE yaudio ycore yengine ymain)
+target_link_libraries(blocks PRIVATE yapplication yaudio ycore yengine ymain)
 set_target_properties(blocks PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 if(WIN32)
 	target_sources(blocks PRIVATE blocks.rc)
