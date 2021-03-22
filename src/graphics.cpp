@@ -8,9 +8,9 @@
 #include <yttrium/math/margins.h>
 #include <yttrium/math/rect.h>
 #include <yttrium/math/vector.h>
+#include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/manager.h>
-#include <yttrium/renderer/modifiers.h>
-#include <yttrium/renderer/pass.h>
+#include <yttrium/renderer/texture.h>
 
 namespace
 {
@@ -125,34 +125,34 @@ GameGraphics::GameGraphics(Yt::RenderManager& manager)
 {
 }
 
-void GameGraphics::drawField(Yt::RenderPass& pass, const Yt::RectF& rect, const GameLogic::Field& field, const GameLogic::Figure& currentFigure) const
+void GameGraphics::drawField(Yt::Renderer2D& renderer, const Yt::RectF& rect, const GameLogic::Field& field, const GameLogic::Figure& currentFigure) const
 {
 	static const int totalWidth = 1 + GameLogic::Field::Width + 1;
 	static const int totalHeight = 1 + GameLogic::Field::Height + 1;
 	const Yt::SizeF blockSize{ rect.width() / totalWidth, rect.height() / totalHeight };
-	Yt::PushTexture pushTexture{ pass, _blocksTexture.get(), Yt::Texture2D::TrilinearFilter };
-	drawFieldBlocks(pass, rect, blockSize, field);
-	drawFieldFigure(pass, rect, blockSize, currentFigure);
-	drawFieldFrame(pass, rect, blockSize);
+	renderer.setTexture(_blocksTexture);
+	drawFieldBlocks(renderer, rect, blockSize, field);
+	drawFieldFigure(renderer, rect, blockSize, currentFigure);
+	drawFieldFrame(renderer, rect, blockSize);
 }
 
-void GameGraphics::drawNextFigure(Yt::RenderPass& pass, const Yt::RectF& rect, const GameLogic::Figure& figure) const
+void GameGraphics::drawNextFigure(Yt::Renderer2D& renderer, const Yt::RectF& rect, const GameLogic::Figure& figure) const
 {
 	if (figure.type() == GameLogic::Figure::None)
 		return;
-	Yt::PushTexture pushTexture{ pass, _blocksTexture.get(), Yt::Texture2D::TrilinearFilter };
-	setTextureRect(pass, figure.type());
+	renderer.setTexture(_blocksTexture);
+	setTextureRect(renderer, figure.type());
 	const Yt::SizeF blockSize{ rect.width() / 4, rect.height() / 2 };
 	for (const auto& block : figure.blocks())
-		drawBlock(pass, rect, blockSize, block.x, 1 - block.y / GameLogic::PointsPerRow);
+		drawBlock(renderer, rect, blockSize, block.x, 1 - block.y / GameLogic::PointsPerRow);
 }
 
-void GameGraphics::drawBlock(Yt::RenderPass& pass, const Yt::RectF& rect, const Yt::SizeF& blockSize, float x, float y) const
+void GameGraphics::drawBlock(Yt::Renderer2D& renderer, const Yt::RectF& rect, const Yt::SizeF& blockSize, float x, float y) const
 {
-	pass.draw_rect({ { rect.left() + x * blockSize._width, rect.top() + y * blockSize._height }, blockSize });
+	renderer.addRect({ { rect.left() + x * blockSize._width, rect.top() + y * blockSize._height }, blockSize });
 }
 
-void GameGraphics::drawFieldBlocks(Yt::RenderPass& pass, const Yt::RectF& rect, const Yt::SizeF& block_size, const GameLogic::Field& field) const
+void GameGraphics::drawFieldBlocks(Yt::Renderer2D& renderer, const Yt::RectF& rect, const Yt::SizeF& block_size, const GameLogic::Field& field) const
 {
 	for (int y = 0; y < GameLogic::Field::Height; ++y)
 	{
@@ -161,41 +161,41 @@ void GameGraphics::drawFieldBlocks(Yt::RenderPass& pass, const Yt::RectF& rect, 
 			const auto figureType = field.blocks[y][x];
 			if (figureType == GameLogic::Figure::None)
 				continue;
-			setTextureRect(pass, figureType);
-			drawBlock(pass, rect, block_size, 1 + x, GameLogic::Field::Height - y);
+			setTextureRect(renderer, figureType);
+			drawBlock(renderer, rect, block_size, 1 + x, GameLogic::Field::Height - y);
 		}
 	}
 }
 
-void GameGraphics::drawFieldFigure(Yt::RenderPass& pass, const Yt::RectF& rect, const Yt::SizeF& block_size, const GameLogic::Figure& figure) const
+void GameGraphics::drawFieldFigure(Yt::Renderer2D& renderer, const Yt::RectF& rect, const Yt::SizeF& block_size, const GameLogic::Figure& figure) const
 {
 	static const Yt::Vector2 frameOffset{ 1, GameLogic::Field::Height };
 	if (figure.type() == GameLogic::Figure::None)
 		return;
-	setTextureRect(pass, figure.type());
+	setTextureRect(renderer, figure.type());
 	for (const auto& block : figure.blocks())
 		if (block.y < GameLogic::Field::Height * GameLogic::PointsPerRow)
-			drawBlock(pass, rect, block_size, frameOffset.x + static_cast<float>(block.x), frameOffset.y - static_cast<float>(block.y) / GameLogic::PointsPerRow);
+			drawBlock(renderer, rect, block_size, frameOffset.x + static_cast<float>(block.x), frameOffset.y - static_cast<float>(block.y) / GameLogic::PointsPerRow);
 }
 
-void GameGraphics::drawFieldFrame(Yt::RenderPass& pass, const Yt::RectF& rect, const Yt::SizeF& blockSize) const
+void GameGraphics::drawFieldFrame(Yt::Renderer2D& renderer, const Yt::RectF& rect, const Yt::SizeF& blockSize) const
 {
 	static const int totalWidth = 1 + GameLogic::Field::Width + 1;
 	static const int totalHeight = 1 + GameLogic::Field::Height + 1;
-	setTextureRect(pass, GameLogic::Figure::None);
+	setTextureRect(renderer, GameLogic::Figure::None);
 	for (int i = 0; i < totalWidth; ++i)
-		drawBlock(pass, rect, blockSize, i, 0);
+		drawBlock(renderer, rect, blockSize, i, 0);
 	for (int i = 1; i < totalHeight - 1; ++i)
 	{
-		drawBlock(pass, rect, blockSize, 0, i);
-		drawBlock(pass, rect, blockSize, totalWidth - 1, i);
+		drawBlock(renderer, rect, blockSize, 0, i);
+		drawBlock(renderer, rect, blockSize, totalWidth - 1, i);
 	}
 	for (int i = 0; i < totalWidth; ++i)
-		drawBlock(pass, rect, blockSize, i, totalHeight - 1);
+		drawBlock(renderer, rect, blockSize, i, totalHeight - 1);
 }
 
-void GameGraphics::setTextureRect(Yt::RenderPass& pass, GameLogic::Figure::Type figureType) const
+void GameGraphics::setTextureRect(Yt::Renderer2D& renderer, GameLogic::Figure::Type figureType) const
 {
 	const auto figureIndex = figureType == GameLogic::Figure::None ? 0 : static_cast<int>(figureType) + 1;
-	pass.set_texture_rect(::blockRect(figureIndex), {});
+	renderer.setTextureRect(::blockRect(figureIndex));
 }
