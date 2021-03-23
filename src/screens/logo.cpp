@@ -14,16 +14,16 @@
 
 #include <numbers>
 
-Screen* LogoScreen::present(Yt::GuiFrame& gui, const std::chrono::steady_clock::duration& duration)
+void LogoScreen::present(Yt::GuiFrame& gui)
 {
-	constexpr std::chrono::steady_clock::duration screenTime{ std::chrono::milliseconds{ 3000 } };
-	_time = std::min(_time + duration, screenTime);
+	constexpr std::chrono::steady_clock::duration maxDuration{ std::chrono::seconds{ 2 } };
+	const auto duration = std::min(std::chrono::steady_clock::now() - _startTime, maxDuration);
 	gui.selectBlankTexture();
 	gui.renderer().setColor(Yt::Bgra32::black());
 	gui.renderer().addBorderlessRect(Yt::RectF{ gui.renderer().viewportSize() });
 	Yt::GuiLabelStyle style;
 	style._fontSize = 1;
-	const auto value = std::sin(std::numbers::pi * static_cast<double>(_time.count()) / static_cast<double>(screenTime.count()));
+	const auto value = std::sin(std::numbers::pi * static_cast<double>(duration.count()) / static_cast<double>(maxDuration.count()));
 	style._textColor = Yt::Bgra32::white(static_cast<uint8_t>(std::lround(255 * value * value)));
 	gui.setLabelStyle(style);
 	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Height{ 64 } };
@@ -33,6 +33,7 @@ Screen* LogoScreen::present(Yt::GuiFrame& gui, const std::chrono::steady_clock::
 	gui.addLabel("Blocks", Yt::GuiAlignment::Center);
 	layout.setSize({ 0, 4 });
 	gui.addLabel("by Yttrium", Yt::GuiAlignment::Center);
+	if (gui.takeKeyPress(Yt::Key::Escape) || duration == maxDuration)
+		_game.setNextScreen(_game._mainMenuScreen);
 	gui.takeMouseCursor();
-	return _time < screenTime && !gui.captureKeyDown(Yt::Key::Escape) ? this : _game._mainMenuScreen.get();
 }

@@ -11,7 +11,7 @@
 #include <yttrium/gui/layout.h>
 #include <yttrium/renderer/2d.h>
 
-Screen* HelpScreen::present(Yt::GuiFrame& gui, const std::chrono::steady_clock::duration&)
+void HelpScreen::present(Yt::GuiFrame& gui)
 {
 	_game.drawBackground(gui.renderer());
 	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 640, 480 } };
@@ -22,8 +22,8 @@ Screen* HelpScreen::present(Yt::GuiFrame& gui, const std::chrono::steady_clock::
 	gui.renderer().addBorderlessRect(layout.add({ 400, 300 }));
 	layout.skip(30);
 	Screen* next = this;
-	if (gui.addButton("Back", "Back", layout.add({ 180, 40 })) || gui.captureKeyDown(Yt::Key::Escape))
-		next = _game._mainMenuScreen.get();
+	if (gui.addButton("Back", "Back", layout.add({ 180, 40 })) || gui.takeKeyPress(Yt::Key::Escape))
+		_game.setNextScreen(_game._mainMenuScreen);
 	layout.setSize({ 180, 40 });
 	layout.setSpacing(10);
 	layout.fromPoint({ 120, 35 }, { 1, 1 }, Yt::GuiLayout::Axis::Y);
@@ -40,5 +40,4 @@ Screen* HelpScreen::present(Yt::GuiFrame& gui, const std::chrono::steady_clock::
 	gui.addLabel("Rotate left");
 	gui.addLabel("Rotate right");
 	gui.addLabel("Pause / Exit");
-	return next;
 }

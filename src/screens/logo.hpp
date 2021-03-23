@@ -6,14 +6,21 @@
 
 #include "../screen.hpp"
 
+#include <chrono>
+
 class LogoScreen final : public Screen
 {
 public:
 	explicit LogoScreen(Game& game) noexcept
 		: Screen{ game } {}
 
-	Screen* present(Yt::GuiFrame&, const std::chrono::steady_clock::duration& duration) override;
+	void start() override
+	{
+		_startTime = std::chrono::steady_clock::now();
+	}
+
+	void present(Yt::GuiFrame&) override;
 
 private:
-	std::chrono::steady_clock::duration _time{ 0 };
+	std::chrono::steady_clock::time_point _startTime;
 };

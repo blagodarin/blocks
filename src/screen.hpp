@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <chrono>
-
 namespace Yt
 {
 	class GuiFrame;
@@ -20,7 +18,8 @@ public:
 		: _game{ game } {}
 
 	virtual ~Screen() noexcept = default;
-	virtual Screen* present(Yt::GuiFrame&, const std::chrono::steady_clock::duration&) = 0;
+	virtual void start() {}
+	virtual void present(Yt::GuiFrame&) = 0;
 
 protected:
 	Game& _game;

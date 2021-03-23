@@ -12,25 +12,18 @@
 #include <yttrium/audio/format.h>
 #include <yttrium/audio/manager.h>
 #include <yttrium/audio/utils.h>
-#include <yttrium/exceptions.h>
 #include <yttrium/gui/context.h>
 #include <yttrium/gui/font.h>
 #include <yttrium/gui/gui.h>
-#include <yttrium/gui/layout.h>
-#include <yttrium/gui/style.h>
 #include <yttrium/image/image.h>
 #include <yttrium/image/utils.h>
 #include <yttrium/logger.h>
 #include <yttrium/main.h>
 #include <yttrium/renderer/2d.h>
-#include <yttrium/renderer/modifiers.h>
 #include <yttrium/renderer/pass.h>
 #include <yttrium/renderer/report.h>
 #include <yttrium/renderer/viewport.h>
 #include <yttrium/resource_loader.h>
-#include <yttrium/script/args.h>
-#include <yttrium/script/context.h>
-#include <yttrium/script/value.h>
 #include <yttrium/storage/source.h>
 #include <yttrium/storage/storage.h>
 #include <yttrium/storage/writer.h>
@@ -85,77 +78,6 @@ namespace
 		}
 		storage.attach_buffer(name, std::move(buffer));
 	}
-
-	//class FieldCanvas : public Yt::Canvas
-	//{
-	//public:
-	//	FieldCanvas(const GameLogic& logic, const GameGraphics& graphics)
-	//		: _logic{ logic }, _graphics{ graphics } {}
-
-	//	void on_draw(Yt::RenderPass& pass, const Yt::RectF& rect, std::chrono::milliseconds) override
-	//	{
-	//		_graphics.drawField(pass, rect, _logic.field(), _logic.current_figure());
-	//	}
-
-	//private:
-	//	const GameLogic& _logic;
-	//	const GameGraphics& _graphics;
-	//};
-
-	//class NextFigureCanvas : public Yt::Canvas
-	//{
-	//public:
-	//	NextFigureCanvas(const GameLogic& logic, const GameGraphics& graphics)
-	//		: _logic{ logic }, _graphics{ graphics } {}
-
-	//	void on_draw(Yt::RenderPass& pass, const Yt::RectF& rect, std::chrono::milliseconds) override
-	//	{
-	//		_graphics.drawNextFigure(pass, rect, _logic.next_figure());
-	//	}
-
-	//private:
-	//	const GameLogic& _logic;
-	//	const GameGraphics& _graphics;
-	//};
-
-	//class ScoreTable
-	//{
-	//public:
-	//	explicit ScoreTable(Yt::ScriptContext& script)
-	//		: _script{ script } {}
-
-	//	void addScore(const std::string& name, int score)
-	//	{
-	//		const auto i = std::find_if(_scores.cbegin(), _scores.cend(), [score](const auto& table_score) { return table_score.second < score; });
-	//		if (i != _scores.cend())
-	//		{
-	//			_scores.emplace(i, name, score);
-	//			_scores.resize(_scores.size() - 1);
-	//			updateVariables();
-	//		}
-	//	}
-
-	//	void setScoreCount(int count)
-	//	{
-	//		_scores.resize(static_cast<size_t>(count));
-	//		updateVariables();
-	//	}
-
-	//private:
-	//	void updateVariables() const
-	//	{
-	//		for (const auto& score : _scores)
-	//		{
-	//			const auto index = &score - _scores.data() + 1;
-	//			_script.set("name" + std::to_string(index), score.first);
-	//			_script.set("score" + std::to_string(index), score.second);
-	//		}
-	//	}
-
-	//private:
-	//	Yt::ScriptContext& _script;
-	//	std::vector<std::pair<std::string, int>> _scores;
-	//};
 }
 
 int ymain(int, char**)
@@ -179,57 +101,18 @@ int ymain(int, char**)
 	window.on_text_input([&gui](std::string_view text) { gui.processTextInput(text); });
 	Yt::Renderer2D rendered2d{ viewport };
 	Yt::ResourceLoader resourceLoader{ storage, &viewport.render_manager() };
-
-	//GameLogic logic;
-	//script.define("game_pause", [&logic](const Yt::ScriptCall&) { logic.pause(); });
-	//script.define("game_start", [&logic](const Yt::ScriptCall& call) { logic.start(call._context.get_int("start_level", 1)); });
-	//script.define("game_stop", [&logic](const Yt::ScriptCall&) { logic.pause(); });
-	//script.define("game_resume", [&logic](const Yt::ScriptCall&) { logic.resume(); });
-	//script.define("move_down", 1, [&logic](const Yt::ScriptCall& call) { logic.set_acceleration(call._args[0]->to_int()); });
-	//script.define("move_left", 1, [&logic](const Yt::ScriptCall& call) { logic.set_left_movement(call._args[0]->to_int()); });
-	//script.define("move_right", 1, [&logic](const Yt::ScriptCall& call) { logic.set_right_movement(call._args[0]->to_int()); });
-	//script.define("screenshot", [&viewport](const Yt::ScriptCall&) { viewport.take_screenshot(); });
-	//script.define("turn_left", [&logic](const Yt::ScriptCall&) { logic.turn_left(); });
-	//script.define("turn_right", [&logic](const Yt::ScriptCall&) { logic.turn_right(); });
-
-	//ScoreTable scoreTable{ script };
-	//script.define("add_score", 2, [&scoreTable](const Yt::ScriptCall& call) { scoreTable.addScore(call._args[0]->string(), call._args[1]->to_int()); });
-	//script.define("set_score_count", 1, [&scoreTable](const Yt::ScriptCall& call) { scoreTable.setScoreCount(call._args[0]->to_int()); });
-
-	//const auto audio = tryCreate<Yt::AudioManager>();
-
-	//GameGraphics graphics{ viewport.render_manager() };
-
-	//LogoCanvas logo_canvas{ gui };
-	//gui.bind_canvas("logo", logo_canvas);
-
-	//FieldCanvas field_canvas{ logic, graphics };
-	//gui.bind_canvas("field", field_canvas);
-
-	//NextFigureCanvas next_figure_canvas{ logic, graphics };
-	//gui.bind_canvas("next", next_figure_canvas);
-
 	Game game{ resourceLoader };
 	window.show();
 	for (Yt::RenderClock clock; application.process_events(); clock.advance())
 	{
-		//if (logic.advance(static_cast<int>(clock.last_frame_duration().count())))
-		//{
-		//	script.set("score", logic.score());
-		//	script.set("lines", logic.lines());
-		//	script.set("level", logic.level());
-		//	if (logic.has_finished())
-		//		gui.notify("game_over");
-		//}
 		Yt::GuiFrame guiFrame{ gui, rendered2d };
-		bool done = !game.present(guiFrame, std::chrono::duration_cast<std::chrono::milliseconds>(clock.last_frame_duration()));
+		if (!game.present(guiFrame))
+			break;
 		viewport.render(clock.next_report(), [&rendered2d](Yt::RenderPass& pass) {
 			rendered2d.draw(pass);
 		});
-		if (guiFrame.captureKeyDown(Yt::Key::F10))
+		if (guiFrame.takeKeyPress(Yt::Key::F10))
 			viewport.take_screenshot().save_as_screenshot(Yt::ImageFormat::Jpeg, 90);
-		if (done)
-			break;
 	}
 	return 0;
 }

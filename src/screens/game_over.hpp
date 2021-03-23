@@ -6,13 +6,15 @@
 
 #include "../screen.hpp"
 
+#include <string>
+
 class GameOverScreen final : public Screen
 {
 public:
 	explicit GameOverScreen(Game& game) noexcept
 		: Screen{ game } {}
 
-	Screen* present(Yt::GuiFrame&, const std::chrono::steady_clock::duration& duration) override;
+	void present(Yt::GuiFrame&) override;
 
 private:
 	std::string _name;

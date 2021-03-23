@@ -12,5 +12,5 @@ public:
 	explicit PauseScreen(Game& game) noexcept
 		: Screen{ game } {}
 
-	Screen* present(Yt::GuiFrame&, const std::chrono::steady_clock::duration& duration) override;
+	void present(Yt::GuiFrame&) override;
 };

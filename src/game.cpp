@@ -46,7 +46,9 @@ Game::Game(Yt::ResourceLoader& loader)
 	, _gameOverScreen{ std::make_unique<GameOverScreen>(*this) }
 	, _topScoresScreen{ std::make_unique<TopScoresScreen>(*this) }
 	, _helpScreen{ std::make_unique<HelpScreen>(*this) }
+	, _graphics{ *loader.render_manager() }
 	, _backgroundTexture{ loader.load_texture_2d("data/textures/background.jpg") }
+	, _cursorTexture{ loader.load_texture_2d("data/textures/cursor.tga") }
 {
 	_topScores.emplace_back(100'000, "Grandmaster");
 	_topScores.emplace_back(80'000, "Master");
@@ -65,16 +67,53 @@ void Game::drawBackground(Yt::Renderer2D& renderer) const
 	renderer.addBorderlessRect(Yt::RectF{ renderer.viewportSize() });
 }
 
-bool Game::present(Yt::GuiFrame& gui, const std::chrono::steady_clock::duration& duration)
+void Game::drawGraphics(Yt::GuiFrame& gui) const
 {
+	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 30, 26 } };
+	gui.selectBlankTexture();
+	gui.renderer().setColor(Yt::Bgra32::black(0x88));
+	gui.renderer().addRect(layout.map({ { 1, 2 }, Yt::SizeF{ 6, 5 } }));
+	gui.renderer().addRect(layout.map({ { 10, 2 }, Yt::SizeF{ 10, 22 } }));
+	gui.renderer().addRect(layout.map({ { 23, 2 }, Yt::SizeF{ 6, 2 } }));
+	gui.renderer().addRect(layout.map({ { 23, 6 }, Yt::SizeF{ 6, 2 } }));
+	gui.renderer().addRect(layout.map({ { 23, 10 }, Yt::SizeF{ 6, 2 } }));
+	gui.addLabel("Next:", Yt::GuiAlignment::Left, layout.map({ { 1.5, 2 }, Yt::SizeF{ 5, 1 } }));
+	gui.addLabel("Level:", Yt::GuiAlignment::Left, layout.map({ { 23.5, 2 }, Yt::SizeF{ 5, 1 } }));
+	gui.addLabel(std::to_string(_logic.level()), Yt::GuiAlignment::Right, layout.map({ { 23.5, 3 }, Yt::SizeF{ 5, 1 } }));
+	gui.addLabel("Lines:", Yt::GuiAlignment::Left, layout.map({ { 23.5, 6 }, Yt::SizeF{ 5, 1 } }));
+	gui.addLabel(std::to_string(_logic.lines()), Yt::GuiAlignment::Right, layout.map({ { 23.5, 7 }, Yt::SizeF{ 5, 1 } }));
+	gui.addLabel("Score:", Yt::GuiAlignment::Left, layout.map({ { 23.5, 10 }, Yt::SizeF{ 5, 1 } }));
+	gui.addLabel(std::to_string(_logic.score()), Yt::GuiAlignment::Right, layout.map({ { 23.5, 11 }, Yt::SizeF{ 5, 1 } }));
+	_graphics.drawField(gui.renderer(), layout.map({ { 9, 1 }, Yt::SizeF{ 12, 24 } }), _logic.field(), _logic.current_figure());
+	_graphics.drawNextFigure(gui.renderer(), layout.map({ { 2, 4 }, Yt::SizeF{ 4, 2 } }), _logic.next_figure());
+}
+
+void Game::drawShade(Yt::GuiFrame& gui) const
+{
+	gui.selectBlankTexture();
+	gui.renderer().setColor(Yt::Bgra32::black(0x88));
+	gui.renderer().addRect(Yt::RectF{ gui.renderer().viewportSize() });
+}
+
+void Game::setNextScreen(const std::unique_ptr<Screen>& screen)
+{
+	_nextScreen = screen.get();
+}
+
+bool Game::present(Yt::GuiFrame& gui)
+{
+	if (_currentScreen != _nextScreen)
+	{
+		_currentScreen = _nextScreen;
+		_currentScreen->start();
+	}
 	assert(_currentScreen);
-	_currentScreen = _currentScreen->present(gui, duration);
+	_currentScreen->present(gui);
 	if (const auto cursor = gui.takeMouseCursor())
 	{
-		Yt::GuiLayout layout{ gui };
-		gui.selectBlankTexture();
-		gui.renderer().setColor(Yt::Bgra32::red());
-		gui.renderer().addBorderlessRect({ *cursor, Yt::SizeF{ 10, 10 } });
+		gui.renderer().setTexture(_cursorTexture);
+		gui.renderer().setColor(Yt::Bgra32::white());
+		gui.renderer().addBorderlessRect({ *cursor, Yt::SizeF{ _cursorTexture->size() } });
 	}
-	return _currentScreen;
+	return _nextScreen;
 }

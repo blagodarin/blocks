@@ -10,7 +10,7 @@
 #include <yttrium/gui/gui.h>
 #include <yttrium/gui/layout.h>
 
-Screen* PlayMenuScreen::present(Yt::GuiFrame& gui, const std::chrono::steady_clock::duration&)
+void PlayMenuScreen::present(Yt::GuiFrame& gui)
 {
 	_game.drawBackground(gui.renderer());
 	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 640, 480 } };
@@ -23,12 +23,23 @@ Screen* PlayMenuScreen::present(Yt::GuiFrame& gui, const std::chrono::steady_clo
 	layout.setSpacing(10);
 	Screen* next = this;
 	if (gui.addButton("Easy", "Easy"))
-		next = _game._gameScreen.get();
+	{
+		_game._startLevel = 1;
+		_game._logic.start(_game._startLevel);
+		_game.setNextScreen(_game._gameScreen);
+	}
 	if (gui.addButton("Normal", "Normal"))
-		next = _game._gameScreen.get();
+	{
+		_game._startLevel = 10;
+		_game._logic.start(_game._startLevel);
+		_game.setNextScreen(_game._gameScreen);
+	}
 	if (gui.addButton("Hard", "Hard"))
-		next = _game._gameScreen.get();
-	if (gui.addButton("Back", "Back") || gui.captureKeyDown(Yt::Key::Escape))
-		next = _game._mainMenuScreen.get();
-	return next;
+	{
+		_game._startLevel = 30;
+		_game._logic.start(_game._startLevel);
+		_game.setNextScreen(_game._gameScreen);
+	}
+	if (gui.addButton("Back", "Back") || gui.takeKeyPress(Yt::Key::Escape))
+		_game.setNextScreen(_game._mainMenuScreen);
 }

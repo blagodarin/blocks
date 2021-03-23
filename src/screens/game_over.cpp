@@ -11,22 +11,25 @@
 #include <yttrium/gui/layout.h>
 #include <yttrium/renderer/2d.h>
 
-Screen* GameOverScreen::present(Yt::GuiFrame& gui, const std::chrono::steady_clock::duration&)
+void GameOverScreen::present(Yt::GuiFrame& gui)
 {
 	_game.drawBackground(gui.renderer());
-	gui.selectBlankTexture();
-	gui.renderer().setColor(Yt::Bgra32::black(0x88));
-	gui.renderer().addRect({ { 0, 0 }, gui.renderer().viewportSize() });
+	_game.drawGraphics(gui);
+	_game.drawShade(gui);
 	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 30, 26 } };
 	layout.fromTopCenter();
 	layout.skip(4);
 	layout.setSpacing(1);
-	gui.addLabel("Game Over", Yt::GuiAlignment::Center, layout.add({ 0, 8 }));
+	gui.addLabel("Game over", Yt::GuiAlignment::Center, layout.add({ 0, 8 }));
 	gui.addLabel("Enter your name:", Yt::GuiAlignment::Center, layout.add({ 0, 3 }));
 	Screen* next = this;
-	if (gui.addStringEdit("Name", _name, layout.add({ 20, 4 })))
-		next = _game._topScoresScreen.get();
-	if (gui.captureKeyDown(Yt::Key::Escape))
-		next = _game._mainMenuScreen.get();
-	return next;
+	if (gui.addStringEdit("Name", _name, layout.add({ 20, 4 })) && !_name.empty())
+	{
+		_game._topScores.emplace_back(_game._logic.score(), _name);
+		std::stable_sort(_game._topScores.begin(), _game._topScores.end(), [](const auto& left, const auto& right) { return left.first > right.first; });
+		_game._topScores.pop_back();
+		_game.setNextScreen(_game._topScoresScreen);
+	}
+	if (gui.takeKeyPress(Yt::Key::Escape))
+		_game.setNextScreen(_game._mainMenuScreen);
 }
