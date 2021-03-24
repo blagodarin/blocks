@@ -12,7 +12,7 @@ set(YTTRIUM_WITH_JPEG ON)
 set(YTTRIUM_WITH_OGGVORBIS OFF)
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 822cd2ec1e12a1ce98e209ed3b652fa994f1b1be)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG f19c609390c9abce1ac8ab646c5a160a6f330138)
 FetchContent_MakeAvailable(Yttrium)
 
 source_group("" FILES blocks.rc)
@@ -45,7 +45,7 @@ add_executable(blocks WIN32
 	src/screens/top_scores.hpp
 	$<$<BOOL:${WIN32}>:blocks.rc>
 	)
-target_link_libraries(blocks PRIVATE yapplication yaudio ycore yengine ygui ymain)
+target_link_libraries(blocks PRIVATE yapplication yaudio ycore ygui yimage ymain yrenderer)
 set_target_properties(blocks PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 yttrium_target_package(blocks

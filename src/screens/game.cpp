@@ -8,7 +8,6 @@
 
 #include <yttrium/application/key.h>
 #include <yttrium/gui/gui.h>
-#include <yttrium/math/color.h>
 #include <yttrium/renderer/2d.h>
 
 #include <cassert>

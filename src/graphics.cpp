@@ -4,10 +4,10 @@
 
 #include "graphics.hpp"
 
+#include <yttrium/geometry/margins.h>
+#include <yttrium/geometry/rect.h>
+#include <yttrium/geometry/vector.h>
 #include <yttrium/image/image.h>
-#include <yttrium/math/margins.h>
-#include <yttrium/math/rect.h>
-#include <yttrium/math/vector.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/manager.h>
 #include <yttrium/renderer/texture.h>

@@ -13,11 +13,11 @@
 #include "screens/play_menu.hpp"
 #include "screens/top_scores.hpp"
 
+#include <yttrium/geometry/rect.h>
 #include <yttrium/gui/gui.h>
-#include <yttrium/math/rect.h>
 #include <yttrium/renderer/2d.h>
+#include <yttrium/renderer/resource_loader.h>
 #include <yttrium/renderer/texture.h>
-#include <yttrium/resource_loader.h>
 
 #include <cassert>
 
@@ -46,7 +46,7 @@ Game::Game(Yt::ResourceLoader& loader)
 	, _gameOverScreen{ std::make_unique<GameOverScreen>(*this) }
 	, _topScoresScreen{ std::make_unique<TopScoresScreen>(*this) }
 	, _helpScreen{ std::make_unique<HelpScreen>(*this) }
-	, _graphics{ *loader.render_manager() }
+	, _graphics{ loader.render_manager() }
 	, _backgroundTexture{ loader.load_texture_2d("data/textures/background.jpg") }
 	, _cursorTexture{ loader.load_texture_2d("data/textures/cursor.tga") }
 {

@@ -22,8 +22,8 @@
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/pass.h>
 #include <yttrium/renderer/report.h>
+#include <yttrium/renderer/resource_loader.h>
 #include <yttrium/renderer/viewport.h>
-#include <yttrium/resource_loader.h>
 #include <yttrium/storage/source.h>
 #include <yttrium/storage/storage.h>
 #include <yttrium/storage/writer.h>
@@ -100,7 +100,7 @@ int ymain(int, char**)
 	window.on_key_event([&gui](const Yt::KeyEvent& event) { gui.processKeyEvent(event); });
 	window.on_text_input([&gui](std::string_view text) { gui.processTextInput(text); });
 	Yt::Renderer2D rendered2d{ viewport };
-	Yt::ResourceLoader resourceLoader{ storage, &viewport.render_manager() };
+	Yt::ResourceLoader resourceLoader{ storage, viewport.render_manager() };
 	Game game{ resourceLoader };
 	window.show();
 	for (Yt::RenderClock clock; application.process_events(); clock.advance())
