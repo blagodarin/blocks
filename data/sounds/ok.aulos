@@ -1,0 +1,20 @@
+gain 16
+speed 6
+
+@voice 1 "Sound"
+amplitude 10 1.00 40 0.25 200 0.00
+wave cosine
+
+@track 1 1
+polyphony chord
+stereo_angle 0
+stereo_angular_size 0
+stereo_delay 0.00
+stereo_distance 0.00
+weight 1
+
+@sequences
+1 1 1 A4
+
+@fragments
+1 1 0 1

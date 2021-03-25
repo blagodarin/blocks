@@ -24,22 +24,31 @@ void PlayMenuScreen::present(Yt::GuiFrame& gui)
 	Screen* next = this;
 	if (gui.addButton("Easy", "Easy"))
 	{
+		_game._audio->play_sound(_game._okSound);
+		_game._audio->play_music(_game._easyGameMusic);
 		_game._startLevel = 1;
 		_game._logic.start(_game._startLevel);
 		_game.setNextScreen(_game._gameScreen);
 	}
 	if (gui.addButton("Normal", "Normal"))
 	{
+		_game._audio->play_sound(_game._okSound);
+		_game._audio->play_music(_game._normalGameMusic);
 		_game._startLevel = 10;
 		_game._logic.start(_game._startLevel);
 		_game.setNextScreen(_game._gameScreen);
 	}
 	if (gui.addButton("Hard", "Hard"))
 	{
+		_game._audio->play_sound(_game._okSound);
+		_game._audio->play_music(_game._hardGameMusic);
 		_game._startLevel = 30;
 		_game._logic.start(_game._startLevel);
 		_game.setNextScreen(_game._gameScreen);
 	}
 	if (gui.addButton("Back", "Back") || gui.takeKeyPress(Yt::Key::Escape))
+	{
+		_game._audio->play_sound(_game._cancelSound);
 		_game.setNextScreen(_game._mainMenuScreen);
+	}
 }

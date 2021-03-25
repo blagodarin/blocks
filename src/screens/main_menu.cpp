@@ -22,11 +22,23 @@ void MainMenuScreen::present(Yt::GuiFrame& gui)
 	layout.setSize({ 180, 40 });
 	layout.setSpacing(10);
 	if (gui.addButton("Play", "Play"))
+	{
+		_game._audio->play_sound(_game._okSound);
 		_game.setNextScreen(_game._playMenuScreen);
+	}
 	if (gui.addButton("Top Scores", "Top Scores"))
+	{
+		_game._audio->play_sound(_game._okSound);
 		_game.setNextScreen(_game._topScoresScreen);
+	}
 	if (gui.addButton("Help", "Help"))
+	{
+		_game._audio->play_sound(_game._okSound);
 		_game.setNextScreen(_game._helpScreen);
+	}
 	if (gui.addButton("Exit", "Exit") || gui.takeKeyPress(Yt::Key::Escape))
+	{
+		_game._audio->play_sound(_game._cancelSound);
 		_game.setNextScreen({});
+	}
 }

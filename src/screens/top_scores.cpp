@@ -22,7 +22,10 @@ void TopScoresScreen::present(Yt::GuiFrame& gui)
 	gui.renderer().addBorderlessRect(layout.add({ 600, 250 }));
 	layout.skip(30);
 	if (gui.addButton("Back", "Back", layout.add({ 180, 40 })) || gui.takeKeyPress(Yt::Key::Escape))
+	{
+		_game._audio->play_sound(_game._cancelSound);
 		_game.setNextScreen(_game._mainMenuScreen);
+	}
 	layout.setSize({ 0, 40 });
 	layout.setSpacing(10);
 	layout.fromPoint({ 50, 35 }, { 1, 1 }, Yt::GuiLayout::Axis::Y);

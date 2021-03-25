@@ -13,11 +13,14 @@
 #include "screens/play_menu.hpp"
 #include "screens/top_scores.hpp"
 
+#include <yttrium/audio/reader.h>
 #include <yttrium/geometry/rect.h>
 #include <yttrium/gui/gui.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/resource_loader.h>
 #include <yttrium/renderer/texture.h>
+#include <yttrium/storage/source.h>
+#include <yttrium/storage/storage.h>
 
 #include <cassert>
 
@@ -37,7 +40,7 @@ namespace
 	}
 }
 
-Game::Game(Yt::ResourceLoader& loader)
+Game::Game(Yt::Storage& storage, Yt::ResourceLoader& loader)
 	: _logoScreen{ std::make_unique<LogoScreen>(*this) }
 	, _mainMenuScreen{ std::make_unique<MainMenuScreen>(*this) }
 	, _playMenuScreen{ std::make_unique<PlayMenuScreen>(*this) }
@@ -47,6 +50,13 @@ Game::Game(Yt::ResourceLoader& loader)
 	, _topScoresScreen{ std::make_unique<TopScoresScreen>(*this) }
 	, _helpScreen{ std::make_unique<HelpScreen>(*this) }
 	, _graphics{ loader.render_manager() }
+	, _audio{ Yt::AudioManager::create() }
+	, _menuMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/prelude_in_g_minor.aulos"), true) }
+	, _easyGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/grande_valse_brillante.aulos"), true) }
+	, _normalGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/hungarian_dance.aulos"), true) }
+	, _hardGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/turkish_march.aulos"), true) }
+	, _cancelSound{ _audio->create_sound(storage.open("data/sounds/cancel.aulos")) }
+	, _okSound{ _audio->create_sound(storage.open("data/sounds/ok.aulos")) }
 	, _backgroundTexture{ loader.load_texture_2d("data/textures/background.jpg") }
 	, _cursorTexture{ loader.load_texture_2d("data/textures/cursor.tga") }
 {

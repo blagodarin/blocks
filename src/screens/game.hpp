@@ -6,7 +6,7 @@
 
 #include "../screen.hpp"
 
-#include <chrono>
+#include <yttrium/utils/clock.h>
 
 class GameScreen final : public Screen
 {
@@ -18,5 +18,5 @@ public:
 	void present(Yt::GuiFrame&) override;
 
 private:
-	std::chrono::steady_clock::time_point _lastTime;
+	Yt::Clock _clock;
 };

@@ -16,14 +16,12 @@ void GameScreen::start()
 {
 	if (!_game._logic.is_active())
 		_game._logic.start(_game._startLevel);
-	_lastTime = std::chrono::steady_clock::now();
+	_clock = Yt::Clock{};
 }
 
 void GameScreen::present(Yt::GuiFrame& gui)
 {
-	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _lastTime);
-	_lastTime += duration;
-	_game._logic.advance(static_cast<int>(duration.count()));
+	_game._logic.advance(_clock.tick());
 	if (!_game._logic.has_finished())
 	{
 		if (gui.takeKeyPress(Yt::Key::Left))
@@ -43,7 +41,10 @@ void GameScreen::present(Yt::GuiFrame& gui)
 		}
 	}
 	else
+	{
+		_game._audio->play_music({});
 		_game.setNextScreen(_game._gameOverScreen);
+	}
 	_game.drawBackground(gui.renderer());
 	_game.drawGraphics(gui);
 	gui.takeMouseCursor();

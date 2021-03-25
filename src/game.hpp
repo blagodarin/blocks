@@ -7,6 +7,9 @@
 #include "graphics.hpp"
 #include "logic.hpp"
 
+#include <yttrium/audio/manager.h>
+#include <yttrium/audio/sound.h>
+
 #include <chrono>
 #include <memory>
 #include <string>
@@ -17,6 +20,7 @@ namespace Yt
 	class GuiFrame;
 	class Renderer2D;
 	class ResourceLoader;
+	class Storage;
 	class Texture2D;
 }
 
@@ -34,12 +38,20 @@ public:
 	const std::unique_ptr<Screen> _topScoresScreen;
 	const std::unique_ptr<Screen> _helpScreen;
 
+	const std::shared_ptr<Yt::AudioManager> _audio;
+	const std::shared_ptr<Yt::AudioReader> _menuMusic;
+	const std::shared_ptr<Yt::AudioReader> _easyGameMusic;
+	const std::shared_ptr<Yt::AudioReader> _normalGameMusic;
+	const std::shared_ptr<Yt::AudioReader> _hardGameMusic;
+	const std::shared_ptr<Yt::Sound> _cancelSound;
+	const std::shared_ptr<Yt::Sound> _okSound;
+
 	GameLogic _logic;
 	int _startLevel = 0;
 	GameGraphics _graphics;
 	std::vector<std::pair<int, std::string>> _topScores;
 
-	Game(Yt::ResourceLoader&);
+	Game(Yt::Storage&, Yt::ResourceLoader&);
 	~Game() noexcept;
 
 	void drawBackground(Yt::Renderer2D&) const;
@@ -50,8 +62,8 @@ public:
 	bool present(Yt::GuiFrame&);
 
 private:
-	Screen* _currentScreen = nullptr;
-	Screen* _nextScreen = _logoScreen.get();
 	const std::shared_ptr<const Yt::Texture2D> _backgroundTexture;
 	const std::shared_ptr<const Yt::Texture2D> _cursorTexture;
+	Screen* _currentScreen = nullptr;
+	Screen* _nextScreen = _logoScreen.get();
 };

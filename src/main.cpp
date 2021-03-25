@@ -21,7 +21,6 @@
 #include <yttrium/main.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/pass.h>
-#include <yttrium/renderer/report.h>
 #include <yttrium/renderer/resource_loader.h>
 #include <yttrium/renderer/viewport.h>
 #include <yttrium/storage/source.h>
@@ -55,29 +54,6 @@ namespace
 				};
 		}));
 	}
-
-	void makeSound(Yt::Storage& storage, const std::string& name)
-	{
-		Yt::Buffer buffer;
-		{
-			constexpr size_t frequency = 44100;
-			constexpr size_t duration = frequency / 4; // 0.25 s.
-
-			Yt::Writer writer{ buffer };
-			if (Yt::write_wav_header(writer, { Yt::AudioSample::i16, 1, frequency }, duration))
-			{
-				constexpr auto time_step = 440.0 / frequency;
-
-				for (size_t i = 0; i < duration; ++i)
-				{
-					const auto base = std::numeric_limits<int16_t>::max() * std::sin(2 * std::numbers::pi_v<double> * time_step * static_cast<double>(i));
-					const auto amplitude = static_cast<double>(duration - i) / duration;
-					writer.write(static_cast<int16_t>(base * amplitude));
-				}
-			}
-		}
-		storage.attach_buffer(name, std::move(buffer));
-	}
 }
 
 int ymain(int, char**)
@@ -87,7 +63,6 @@ int ymain(int, char**)
 	storage.attach_package("blocks.ypq");
 	::makeButtonsTexture(storage, "data/textures/buttons.tga", 16);
 	::makeCursorTexture(storage, "data/textures/cursor.tga", 64);
-	::makeSound(storage, "data/sounds/sound.wav");
 	Yt::Application application;
 	Yt::Window window{ application, "Blocks" };
 	if (const auto iconSource = storage.open("data/icon.ico"))
@@ -97,18 +72,16 @@ int ymain(int, char**)
 	Yt::GuiContext gui{ window };
 	if (const auto fontSource = storage.open("data/fonts/source_sans_pro.ttf"))
 		gui.setDefaultFont(Yt::Font::load(*fontSource, viewport.render_manager()));
-	window.on_key_event([&gui](const Yt::KeyEvent& event) { gui.processKeyEvent(event); });
-	window.on_text_input([&gui](std::string_view text) { gui.processTextInput(text); });
 	Yt::Renderer2D rendered2d{ viewport };
 	Yt::ResourceLoader resourceLoader{ storage, viewport.render_manager() };
-	Game game{ resourceLoader };
+	Game game{ storage, resourceLoader };
 	window.show();
-	for (Yt::RenderClock clock; application.process_events(); clock.advance())
+	while (application.process_events(gui.eventCallbacks()))
 	{
 		Yt::GuiFrame guiFrame{ gui, rendered2d };
 		if (!game.present(guiFrame))
 			break;
-		viewport.render(clock.next_report(), [&rendered2d](Yt::RenderPass& pass) {
+		viewport.render([&rendered2d](Yt::RenderPass& pass) {
 			rendered2d.draw(pass);
 		});
 		if (guiFrame.takeKeyPress(Yt::Key::F10))
