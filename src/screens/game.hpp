@@ -6,7 +6,7 @@
 
 #include "../screen.hpp"
 
-#include <yttrium/utils/clock.h>
+#include <yttrium/base/clock.h>
 
 class GameScreen final : public Screen
 {

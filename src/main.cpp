@@ -12,12 +12,12 @@
 #include <yttrium/audio/format.h>
 #include <yttrium/audio/manager.h>
 #include <yttrium/audio/utils.h>
+#include <yttrium/base/logger.h>
 #include <yttrium/gui/context.h>
 #include <yttrium/gui/font.h>
 #include <yttrium/gui/gui.h>
 #include <yttrium/image/image.h>
 #include <yttrium/image/utils.h>
-#include <yttrium/logger.h>
 #include <yttrium/main.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/pass.h>
