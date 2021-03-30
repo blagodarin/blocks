@@ -21,7 +21,6 @@ void PauseScreen::present(Yt::GuiFrame& gui)
 	layout.skip(7);
 	layout.setSize({ 8, 2 });
 	layout.setSpacing(1);
-	Screen* next = this;
 	if (gui.addButton("Resume", "Resume") || gui.takeKeyPress(Yt::Key::Escape))
 	{
 		_game._audio->play_sound(_game._okSound);

@@ -8,11 +8,13 @@ project(Blocks LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(YTTRIUM_WITH_JPEG ON)
-set(YTTRIUM_WITH_OGGVORBIS OFF)
+set(YTTRIUM_AUDIO_AULOS ON)
+set(YTTRIUM_IMAGE_ICO ON)
+set(YTTRIUM_IMAGE_JPEG ON)
+set(YTTRIUM_IMAGE_TGA ON) # For generated images.
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG d4a4858c0a7fd2c02f44f94461312381cb89b335)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG e263502da7be5404c32d61d15a1ea8146695fb3e)
 FetchContent_MakeAvailable(Yttrium)
 
 source_group("" FILES blocks.rc)
@@ -49,7 +51,9 @@ target_link_libraries(blocks PRIVATE Y_application Y_audio Y_gui Y_image Y_main 
 set_target_properties(blocks PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 yttrium_target_package(blocks
+	GROUP "embed"
 	OUTPUT blocks.ypq
-	INDEX data/index.txt)
+	INDEX data/index.txt
+	EMBED)
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT blocks)

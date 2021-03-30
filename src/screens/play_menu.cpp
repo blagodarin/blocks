@@ -21,7 +21,6 @@ void PlayMenuScreen::present(Yt::GuiFrame& gui)
 	layout.skip(30);
 	layout.setSize({ 180, 40 });
 	layout.setSpacing(10);
-	Screen* next = this;
 	if (gui.addButton("Easy", "Easy"))
 	{
 		_game._audio->play_sound(_game._okSound);

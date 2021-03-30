@@ -21,7 +21,6 @@ void HelpScreen::present(Yt::GuiFrame& gui)
 	gui.renderer().setColor(Yt::Bgra32::black(0x88));
 	gui.renderer().addBorderlessRect(layout.add({ 400, 300 }));
 	layout.skip(30);
-	Screen* next = this;
 	if (gui.addButton("Back", "Back", layout.add({ 180, 40 })) || gui.takeKeyPress(Yt::Key::Escape))
 	{
 		_game._audio->play_sound(_game._cancelSound);

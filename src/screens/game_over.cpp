@@ -7,6 +7,7 @@
 #include "../game.hpp"
 
 #include <yttrium/application/key.h>
+#include <yttrium/base/string.h>
 #include <yttrium/gui/gui.h>
 #include <yttrium/gui/layout.h>
 #include <yttrium/renderer/2d.h>
@@ -22,8 +23,11 @@ void GameOverScreen::present(Yt::GuiFrame& gui)
 	layout.setSpacing(1);
 	gui.addLabel("Game over", Yt::GuiAlignment::Center, layout.add({ 0, 8 }));
 	gui.addLabel("Enter your name:", Yt::GuiAlignment::Center, layout.add({ 0, 3 }));
-	Screen* next = this;
-	if (gui.addStringEdit("Name", _name, layout.add({ 20, 4 })) && !_name.empty())
+	if (std::exchange(_justStarted, false))
+		gui.putDefaultFocus();
+	const bool nameEntered = gui.addStringEdit("Name", _name, layout.add({ 20, 4 }));
+	Yt::strip(_name, nameEntered);
+	if (nameEntered && !_name.empty())
 	{
 		_game._audio->play_music(_game._menuMusic);
 		_game._topScores.emplace_back(_game._logic.score(), _name);

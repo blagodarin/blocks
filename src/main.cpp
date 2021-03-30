@@ -32,6 +32,10 @@
 
 namespace
 {
+	constexpr unsigned char kPackage[]{
+#include "blocks.ypq.inc"
+	};
+
 	void makeButtonsTexture(Yt::Storage& storage, const std::string& name, size_t button_size)
 	{
 		constexpr size_t button_styles = 4;
@@ -60,7 +64,7 @@ int ymain(int, char**)
 {
 	Yt::Logger logger;
 	Yt::Storage storage{ Yt::Storage::UseFileSystem::Never };
-	storage.attach_package("blocks.ypq");
+	storage.attach_package(Yt::Source::from(kPackage, sizeof kPackage));
 	::makeButtonsTexture(storage, "data/textures/buttons.tga", 16);
 	::makeCursorTexture(storage, "data/textures/cursor.tga", 64);
 	Yt::Application application;
@@ -78,13 +82,14 @@ int ymain(int, char**)
 	window.show();
 	while (application.process_events(gui.eventCallbacks()))
 	{
-		Yt::GuiFrame guiFrame{ gui, rendered2d };
-		if (!game.present(guiFrame))
+		Yt::GuiFrame frame{ gui, rendered2d };
+		const bool screenshot = frame.takeKeyPress(Yt::Key::F10); // Before Press-Any-Key can steal it.
+		if (!game.present(frame))
 			break;
 		viewport.render([&rendered2d](Yt::RenderPass& pass) {
 			rendered2d.draw(pass);
 		});
-		if (guiFrame.takeKeyPress(Yt::Key::F10))
+		if (screenshot)
 			viewport.take_screenshot().save_as_screenshot(Yt::ImageFormat::Jpeg, 90);
 	}
 	return 0;

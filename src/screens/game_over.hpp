@@ -14,8 +14,10 @@ public:
 	explicit GameOverScreen(Game& game) noexcept
 		: Screen{ game } {}
 
+	void start() override { _justStarted = true; }
 	void present(Yt::GuiFrame&) override;
 
 private:
-	std::string _name;
+	bool _justStarted = false;
+	std::string _name = "Player";
 };
