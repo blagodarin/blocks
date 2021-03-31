@@ -4,7 +4,7 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-project(Blocks LANGUAGES CXX)
+project(Blocks VERSION 0.0.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -17,10 +17,9 @@ include(FetchContent)
 FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG e263502da7be5404c32d61d15a1ea8146695fb3e)
 FetchContent_MakeAvailable(Yttrium)
 
-source_group("" FILES blocks.rc)
 source_group("src" REGULAR_EXPRESSION "src/")
 source_group("src/screens" REGULAR_EXPRESSION "src/screens/")
-add_executable(blocks WIN32
+add_executable(Blocks WIN32
 	src/game.cpp
 	src/game.hpp
 	src/graphics.cpp
@@ -45,15 +44,21 @@ add_executable(blocks WIN32
 	src/screens/play_menu.hpp
 	src/screens/top_scores.cpp
 	src/screens/top_scores.hpp
-	$<$<BOOL:${WIN32}>:blocks.rc>
 	)
-target_link_libraries(blocks PRIVATE Y_application Y_audio Y_gui Y_image Y_main Y_renderer Y_storage)
-set_target_properties(blocks PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+target_link_libraries(Blocks PRIVATE Y_application Y_audio Y_gui Y_image Y_main Y_renderer Y_storage)
+set_target_properties(Blocks PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-yttrium_target_package(blocks
+if(WIN32)
+	configure_file(blocks.rc.in blocks.rc)
+	target_include_directories(Blocks PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+	target_sources(Blocks PRIVATE blocks.rc.in ${CMAKE_CURRENT_BINARY_DIR}/blocks.rc)
+	source_group("" FILES blocks.rc.in ${CMAKE_CURRENT_BINARY_DIR}/blocks.rc)
+endif()
+
+yttrium_target_package(Blocks
 	GROUP "embed"
 	OUTPUT blocks.ypq
 	INDEX data/index.txt
 	EMBED)
 
-set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT blocks)
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Blocks)
