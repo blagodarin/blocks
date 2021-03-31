@@ -7,10 +7,10 @@ cache:
 
 build_script:
   - set BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\.build
-  - cmake -S %APPVEYOR_BUILD_FOLDER% -B %BUILD_DIR% -G "Visual Studio 16 2019" -A x64 -DYTTRIUM_RENDERER=opengl -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=%APPVEYOR_BUILD_FOLDER%\bin
+  - cmake -S %APPVEYOR_BUILD_FOLDER% -B %BUILD_DIR% -G "Visual Studio 16 2019" -A x64 -DYTTRIUM_RENDERER=opengl -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=%APPVEYOR_BUILD_FOLDER%
   - cmake --build %BUILD_DIR% --parallel --config Debug -- /nologo
   - cmake --build %BUILD_DIR% --parallel --config Release -- /nologo
 
 artifacts:
-  - path: bin\Blocks.exe
+  - path: Blocks.exe
     type: file
