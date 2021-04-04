@@ -5,6 +5,7 @@
 #include "graphics.hpp"
 
 #include "game.hpp"
+#include "textures.hpp"
 
 #include <yttrium/application/application.h>
 #include <yttrium/application/key.h>
@@ -17,7 +18,6 @@
 #include <yttrium/gui/font.h>
 #include <yttrium/gui/gui.h>
 #include <yttrium/image/image.h>
-#include <yttrium/image/utils.h>
 #include <yttrium/main.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/pass.h>
@@ -27,37 +27,11 @@
 #include <yttrium/storage/storage.h>
 #include <yttrium/storage/writer.h>
 
-#include <cassert>
-#include <numbers>
-
 namespace
 {
 	constexpr unsigned char kPackage[]{
 #include "blocks.ypq.inc"
 	};
-
-	void makeButtonsTexture(Yt::Storage& storage, const std::string& name, size_t button_size)
-	{
-		constexpr size_t button_styles = 4;
-		storage.attach_buffer(name, Yt::make_bgra32_tga(button_size, button_size * button_styles, [button_size](size_t, size_t y) {
-			const auto style = y / button_size;
-			return Yt::Bgra32{ 0xff, 0x44 * style, 0x44 * style };
-		}));
-	}
-
-	void makeCursorTexture(Yt::Storage& storage, const std::string& name, size_t size)
-	{
-		storage.attach_buffer(name, Yt::make_bgra32_tga(size, size, [size](size_t x, size_t y) {
-			if (y > 2 * x || 2 * y < x || (y > 2 * (size - x) && x > 2 * (size - y)))
-				return Yt::Bgra32{ 0, 0, 0, 0 };
-			else
-				return Yt::Bgra32{
-					y * 0xff / (size - 1),
-					x * 0xff / (size - 1),
-					(size * size - x * y) * 0xff / (size * size),
-				};
-		}));
-	}
 }
 
 int ymain(int, char**)
@@ -65,7 +39,7 @@ int ymain(int, char**)
 	Yt::Logger logger;
 	Yt::Storage storage{ Yt::Storage::UseFileSystem::Never };
 	storage.attach_package(Yt::Source::from(kPackage, sizeof kPackage));
-	::makeButtonsTexture(storage, "data/textures/buttons.tga", 16);
+	::makeBackgroundTexture(storage, "data/textures/background.tga");
 	::makeCursorTexture(storage, "data/textures/cursor.tga", 64);
 	Yt::Application application;
 	Yt::Window window{ application, "Blocks" };

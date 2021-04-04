@@ -28,14 +28,14 @@ namespace
 {
 	Yt::RectF scaleToFill(const Yt::SizeF& textureSize, const Yt::SizeF& rectSize)
 	{
-		const auto widthRatio = rectSize._width / textureSize._width;
-		const auto heightRatio = rectSize._height / textureSize._height;
-		if (widthRatio > heightRatio)
+		const auto widthRatio = textureSize._width / rectSize._width;
+		const auto heightRatio = textureSize._height / rectSize._height;
+		if (widthRatio < heightRatio)
 		{
-			const auto offsetY = rectSize._height / (2 * widthRatio);
+			const auto offsetY = (textureSize._height - rectSize._height * widthRatio) / 2;
 			return Yt::RectF{ { 0, offsetY }, Yt::Vector2{ textureSize._width, textureSize._height - offsetY } };
 		}
-		const auto offsetX = rectSize._width / (2 * heightRatio);
+		const auto offsetX = (textureSize._width - rectSize._width * heightRatio) / 2;
 		return Yt::RectF{ { offsetX, 0 }, Yt::Vector2{ textureSize._width - offsetX, textureSize._height } };
 	}
 }
@@ -57,7 +57,7 @@ Game::Game(Yt::Storage& storage, Yt::ResourceLoader& loader)
 	, _hardGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/turkish_march.aulos"), true) }
 	, _cancelSound{ _audio->create_sound(storage.open("data/sounds/cancel.aulos")) }
 	, _okSound{ _audio->create_sound(storage.open("data/sounds/ok.aulos")) }
-	, _backgroundTexture{ loader.load_texture_2d("data/textures/background.jpg") }
+	, _backgroundTexture{ loader.load_texture_2d("data/textures/background.tga") }
 	, _cursorTexture{ loader.load_texture_2d("data/textures/cursor.tga") }
 {
 	_topScores.emplace_back(100'000, "Grandmaster");

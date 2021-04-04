@@ -44,6 +44,8 @@ add_executable(Blocks WIN32
 	src/screens/play_menu.hpp
 	src/screens/top_scores.cpp
 	src/screens/top_scores.hpp
+	src/textures.cpp
+	src/textures.hpp
 	)
 target_link_libraries(Blocks PRIVATE Y_application Y_audio Y_gui Y_image Y_main Y_renderer Y_storage)
 set_target_properties(Blocks PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")

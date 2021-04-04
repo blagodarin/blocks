@@ -31,8 +31,8 @@ void LogoScreen::present(Yt::GuiFrame& gui)
 	layout.skip(24);
 	layout.setSize({ 0, 8 });
 	gui.addLabel("Blocks", Yt::GuiAlignment::Center);
-	layout.setSize({ 0, 4 });
-	gui.addLabel("by Yttrium", Yt::GuiAlignment::Center);
+	layout.setSize({ 0, 3 });
+	gui.addLabel("Powered by Yttrium", Yt::GuiAlignment::Center);
 	if (gui.takeAnyKeyPress() || duration == maxDuration)
 	{
 		_game._audio->play_music(_game._menuMusic);

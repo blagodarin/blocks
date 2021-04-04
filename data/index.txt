@@ -10,5 +10,4 @@ package
 	"data/music/turkish_march.aulos"
 	"data/sounds/cancel.aulos"
 	"data/sounds/ok.aulos"
-	"data/textures/background.jpg"
 ]
