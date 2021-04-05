@@ -64,7 +64,7 @@ int ymain(int, char**)
 			rendered2d.draw(pass);
 		});
 		if (screenshot)
-			viewport.take_screenshot().save_as_screenshot(Yt::ImageFormat::Jpeg, 90);
+			viewport.take_screenshot().save_as_screenshot(Yt::ImageFormat::Png);
 	}
 	return 0;
 }

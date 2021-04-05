@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(YTTRIUM_AUDIO_AULOS ON)
 set(YTTRIUM_IMAGE_ICO ON)
-set(YTTRIUM_IMAGE_JPEG ON)
+set(YTTRIUM_IMAGE_PNG ON) # For screenshots (not JPEG for smaller binary size).
 set(YTTRIUM_IMAGE_TGA ON) # For generated images.
 
 include(FetchContent)
