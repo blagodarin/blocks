@@ -18,8 +18,8 @@
 namespace Yt
 {
 	class GuiFrame;
+	class RenderManager;
 	class Renderer2D;
-	class ResourceLoader;
 	class Storage;
 	class Texture2D;
 }
@@ -51,7 +51,7 @@ public:
 	GameGraphics _graphics;
 	std::vector<std::pair<int, std::string>> _topScores;
 
-	Game(Yt::Storage&, Yt::ResourceLoader&);
+	Game(Yt::Storage&, Yt::RenderManager&);
 	~Game() noexcept;
 
 	void drawBackground(Yt::Renderer2D&) const;

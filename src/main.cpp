@@ -5,7 +5,6 @@
 #include "graphics.hpp"
 
 #include "game.hpp"
-#include "textures.hpp"
 
 #include <yttrium/application/application.h>
 #include <yttrium/application/key.h>
@@ -21,7 +20,6 @@
 #include <yttrium/main.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/pass.h>
-#include <yttrium/renderer/resource_loader.h>
 #include <yttrium/renderer/viewport.h>
 #include <yttrium/storage/source.h>
 #include <yttrium/storage/storage.h>
@@ -39,8 +37,6 @@ int ymain(int, char**)
 	Yt::Logger logger;
 	Yt::Storage storage{ Yt::Storage::UseFileSystem::Never };
 	storage.attach_package(Yt::Source::from(kPackage, sizeof kPackage));
-	::makeBackgroundTexture(storage, "data/textures/background.tga");
-	::makeCursorTexture(storage, "data/textures/cursor.tga", 64);
 	Yt::Application application;
 	Yt::Window window{ application, "Blocks" };
 	if (const auto iconSource = storage.open("data/icon.ico"))
@@ -51,8 +47,7 @@ int ymain(int, char**)
 	if (const auto fontSource = storage.open("data/fonts/source_sans_pro.ttf"))
 		gui.setDefaultFont(Yt::Font::load(*fontSource, viewport.render_manager()));
 	Yt::Renderer2D rendered2d{ viewport };
-	Yt::ResourceLoader resourceLoader{ storage, viewport.render_manager() };
-	Game game{ storage, resourceLoader };
+	Game game{ storage, viewport.render_manager() };
 	window.show();
 	while (application.process_events(gui.eventCallbacks()))
 	{

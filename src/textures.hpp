@@ -4,12 +4,7 @@
 
 #pragma once
 
-#include <string_view>
+#include <yttrium/image/image.h>
 
-namespace Yt
-{
-	class Storage;
-}
-
-void makeBackgroundTexture(Yt::Storage&, std::string_view name);
-void makeCursorTexture(Yt::Storage&, std::string_view name, size_t size);
+Yt::Image makeBackgroundTexture();
+Yt::Image makeCursorTexture(size_t size);
