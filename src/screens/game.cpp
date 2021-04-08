@@ -42,8 +42,8 @@ void GameScreen::present(Yt::GuiFrame& gui)
 	}
 	else
 	{
-		_game._audio->play_music({});
-		_game.setNextScreen(_game._gameOverScreen);
+		_game._audio->play_music(_game._gameOverMusic);
+		_game.setNextScreen(_game._logic.score() > _game._topScores.back().first ? _game._gameOverScreen : _game._topScoresScreen);
 	}
 	_game.drawBackground(gui.renderer());
 	_game.drawGraphics(gui);

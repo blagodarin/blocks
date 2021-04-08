@@ -10,18 +10,23 @@
 #include <yttrium/gui/gui.h>
 #include <yttrium/gui/layout.h>
 
+void MainMenuScreen::start()
+{
+	_game._audio->play_music(_game._menuMusic);
+}
+
 void MainMenuScreen::present(Yt::GuiFrame& gui)
 {
 	_game.drawBackground(gui.renderer());
-	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 640, 480 } };
+	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 30, 26 } };
 	layout.fromTopCenter();
-	layout.skip(20);
-	layout.setSize({ 640, 160 });
+	layout.skip(1);
+	layout.setSize({ 30, 10 });
 	gui.addLabel("Blocks", Yt::GuiAlignment::Center);
-	layout.skip(30);
-	layout.setSize({ 180, 40 });
-	layout.setSpacing(10);
-	if (gui.addButton("Play", "Play"))
+	layout.skip(1);
+	layout.setSize({ 10, 2 });
+	layout.setSpacing(1);
+	if (gui.addButton("Play", "Play") || gui.takeKeyPress(Yt::Key::Enter))
 	{
 		_game._audio->play_sound(_game._okSound);
 		_game.setNextScreen(_game._playMenuScreen);
@@ -31,7 +36,7 @@ void MainMenuScreen::present(Yt::GuiFrame& gui)
 		_game._audio->play_sound(_game._okSound);
 		_game.setNextScreen(_game._topScoresScreen);
 	}
-	if (gui.addButton("Help", "Help"))
+	if (gui.addButton("Controls", "Controls"))
 	{
 		_game._audio->play_sound(_game._okSound);
 		_game.setNextScreen(_game._helpScreen);

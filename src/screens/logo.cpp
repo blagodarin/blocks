@@ -34,9 +34,6 @@ void LogoScreen::present(Yt::GuiFrame& gui)
 	layout.setSize({ 0, 3 });
 	gui.addLabel("Powered by Yttrium", Yt::GuiAlignment::Center);
 	if (gui.takeAnyKeyPress() || duration == maxDuration)
-	{
-		_game._audio->play_music(_game._menuMusic);
 		_game.setNextScreen(_game._mainMenuScreen);
-	}
 	gui.takeMouseCursor();
 }

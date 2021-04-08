@@ -12,5 +12,6 @@ public:
 	explicit MainMenuScreen(Game& game) noexcept
 		: Screen{ game } {}
 
+	void start() override;
 	void present(Yt::GuiFrame&) override;
 };

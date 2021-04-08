@@ -43,6 +43,7 @@ public:
 	const std::shared_ptr<Yt::AudioReader> _easyGameMusic;
 	const std::shared_ptr<Yt::AudioReader> _normalGameMusic;
 	const std::shared_ptr<Yt::AudioReader> _hardGameMusic;
+	const std::shared_ptr<Yt::AudioReader> _gameOverMusic;
 	const std::shared_ptr<Yt::Sound> _cancelSound;
 	const std::shared_ptr<Yt::Sound> _okSound;
 

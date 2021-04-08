@@ -29,15 +29,11 @@ void GameOverScreen::present(Yt::GuiFrame& gui)
 	Yt::strip(_name, nameEntered);
 	if (nameEntered && !_name.empty())
 	{
-		_game._audio->play_music(_game._menuMusic);
 		_game._topScores.emplace_back(_game._logic.score(), _name);
 		std::stable_sort(_game._topScores.begin(), _game._topScores.end(), [](const auto& left, const auto& right) { return left.first > right.first; });
 		_game._topScores.pop_back();
 		_game.setNextScreen(_game._topScoresScreen);
 	}
 	if (gui.takeKeyPress(Yt::Key::Escape))
-	{
-		_game._audio->play_music(_game._menuMusic);
 		_game.setNextScreen(_game._mainMenuScreen);
-	}
 }

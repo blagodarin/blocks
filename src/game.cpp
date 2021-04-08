@@ -56,15 +56,16 @@ Game::Game(Yt::Storage& storage, Yt::RenderManager& renderManager)
 	, _easyGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/grande_valse_brillante.aulos"), true) }
 	, _normalGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/hungarian_dance.aulos"), true) }
 	, _hardGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/turkish_march.aulos"), true) }
+	, _gameOverMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/fur_elise.aulos"), true) }
 	, _cancelSound{ _audio->create_sound(storage.open("data/sounds/cancel.aulos")) }
 	, _okSound{ _audio->create_sound(storage.open("data/sounds/ok.aulos")) }
 	, _backgroundTexture{ renderManager.create_texture_2d(::makeBackgroundTexture()) }
 	, _cursorTexture{ renderManager.create_texture_2d(::makeCursorTexture(64)) }
 {
-	_topScores.emplace_back(100'000, "Grandmaster");
-	_topScores.emplace_back(80'000, "Master");
-	_topScores.emplace_back(50'000, "Professional");
-	_topScores.emplace_back(20'000, "Amateur");
+	_topScores.emplace_back(250'000, "Grandm\xc3\xa6ster");
+	_topScores.emplace_back(200'000, "Master");
+	_topScores.emplace_back(100'000, "Professional");
+	_topScores.emplace_back(50'000, "Amateur");
 	_topScores.emplace_back(10'000, "Novice");
 }
 
