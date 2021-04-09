@@ -64,9 +64,9 @@ Game::Game(Yt::Storage& storage, Yt::RenderManager& renderManager)
 {
 	_topScores.emplace_back(250'000, "Grandm\xc3\xa6ster");
 	_topScores.emplace_back(200'000, "Master");
-	_topScores.emplace_back(100'000, "Professional");
-	_topScores.emplace_back(50'000, "Amateur");
-	_topScores.emplace_back(10'000, "Novice");
+	_topScores.emplace_back(150'000, "Professional");
+	_topScores.emplace_back(100'000, "Amateur");
+	_topScores.emplace_back(50'000, "Novice");
 }
 
 Game::~Game() = default;

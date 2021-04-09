@@ -26,12 +26,10 @@ void LogoScreen::present(Yt::GuiFrame& gui)
 	const auto value = std::sin(std::numbers::pi * static_cast<double>(duration.count()) / static_cast<double>(maxDuration.count()));
 	style._textColor = Yt::Bgra32::white(static_cast<uint8_t>(std::lround(255 * value * value)));
 	gui.setLabelStyle(style);
-	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Height{ 64 } };
+	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Height{ 26 } };
 	layout.fromTopCenter();
-	layout.skip(24);
-	layout.setSize({ 0, 8 });
-	gui.addLabel("Blocks", Yt::GuiAlignment::Center);
-	layout.setSize({ 0, 3 });
+	layout.skip(12);
+	layout.setSize({ 0, 2 });
 	gui.addLabel("Powered by Yttrium", Yt::GuiAlignment::Center);
 	if (gui.takeAnyKeyPress() || duration == maxDuration)
 		_game.setNextScreen(_game._mainMenuScreen);

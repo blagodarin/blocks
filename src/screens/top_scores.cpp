@@ -26,16 +26,17 @@ void TopScoresScreen::present(Yt::GuiFrame& gui)
 		_game._audio->play_sound(_game._cancelSound);
 		_game.setNextScreen(_game._mainMenuScreen);
 	}
+	layout.setSpacing(0.5);
 	layout.setSize({ 2, 2 });
-	layout.fromPoint({ 1, 2.5 }, { 1, 1 }, Yt::GuiLayout::Axis::Y);
+	layout.fromPoint({ 2, 1.5 }, { 1, 1 }, Yt::GuiLayout::Axis::Y);
 	for (size_t i = 0; i < _game._topScores.size(); ++i)
-		gui.addLabel(std::to_string(i + 1), Yt::GuiAlignment::Right);
-	layout.setSize({ 18, 2 });
-	layout.fromPoint({ 4, 2.5 }, { 1, 1 }, Yt::GuiLayout::Axis::Y);
+		gui.addLabel(std::to_string(i + 1), Yt::GuiAlignment::Left);
+	layout.setSize({ 20, 2 });
+	layout.fromPoint({ 3.5, 1.5 }, { 1, 1 }, Yt::GuiLayout::Axis::Y);
 	for (const auto& score : _game._topScores)
 		gui.addLabel(score.second);
 	layout.setSize({ 5, 2 });
-	layout.fromPoint({ 23, 2.5 }, { 1, 1 }, Yt::GuiLayout::Axis::Y);
+	layout.fromPoint({ 23, 1.5 }, { 1, 1 }, Yt::GuiLayout::Axis::Y);
 	for (const auto& score : _game._topScores)
 		gui.addLabel(std::to_string(score.first), Yt::GuiAlignment::Right);
 }

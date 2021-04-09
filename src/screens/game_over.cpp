@@ -19,13 +19,12 @@ void GameOverScreen::present(Yt::GuiFrame& gui)
 	_game.drawShade(gui);
 	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 30, 26 } };
 	layout.fromTopCenter();
-	layout.skip(4);
-	layout.setSpacing(1);
-	gui.addLabel("Game over", Yt::GuiAlignment::Center, layout.add({ 0, 8 }));
-	gui.addLabel("Enter your name:", Yt::GuiAlignment::Center, layout.add({ 0, 3 }));
+	layout.skip(11);
+	gui.addLabel("Enter your name:", Yt::GuiAlignment::Center, layout.add({ 0, 2 }));
+	layout.skip(0.5);
 	if (std::exchange(_justStarted, false))
 		gui.putDefaultFocus();
-	const bool nameEntered = gui.addStringEdit("Name", _name, layout.add({ 20, 4 }));
+	const bool nameEntered = gui.addStringEdit("Name", _name, layout.add({ 14, 2 }));
 	Yt::strip(_name, nameEntered);
 	if (nameEntered && !_name.empty())
 	{
