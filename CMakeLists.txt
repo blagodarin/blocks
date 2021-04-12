@@ -13,7 +13,7 @@ set(YTTRIUM_IMAGE_ICO ON)
 set(YTTRIUM_IMAGE_PNG ON) # For screenshots (not JPEG for smaller binary size).
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 0c052c552b168bedc08a44caa361e3b61286d7e0)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG cd75d5e5a708e767264d3b0bc274569eac7486c9)
 FetchContent_MakeAvailable(Yttrium)
 
 source_group("src" REGULAR_EXPRESSION "src/")

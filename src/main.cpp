@@ -25,6 +25,8 @@
 #include <yttrium/storage/storage.h>
 #include <yttrium/storage/writer.h>
 
+#include <future>
+
 namespace
 {
 	constexpr unsigned char kPackage[]{
@@ -48,6 +50,7 @@ int ymain(int, char**)
 		gui.setDefaultFont(Yt::Font::load(*fontSource, viewport.render_manager()));
 	Yt::Renderer2D rendered2d{ viewport };
 	Game game{ storage, viewport.render_manager() };
+	std::future<void> screenshotFuture;
 	window.show();
 	while (application.process_events(gui.eventCallbacks()))
 	{
@@ -59,7 +62,7 @@ int ymain(int, char**)
 			rendered2d.draw(pass);
 		});
 		if (screenshot)
-			viewport.take_screenshot().save_as_screenshot(Yt::ImageFormat::Png);
+			screenshotFuture = std::async(std::launch::async, [image = viewport.take_screenshot()] { image.save_as_screenshot(Yt::ImageFormat::Png, 100); });
 	}
 	return 0;
 }
