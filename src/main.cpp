@@ -30,7 +30,7 @@
 namespace
 {
 	constexpr unsigned char kPackage[]{
-#include "blocks.ypq.inc"
+#include "blocks.yp.inc"
 	};
 }
 

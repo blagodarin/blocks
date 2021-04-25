@@ -13,7 +13,7 @@ set(YTTRIUM_IMAGE_ICO ON)
 set(YTTRIUM_IMAGE_PNG ON) # For screenshots (not JPEG for smaller binary size).
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG cd75d5e5a708e767264d3b0bc274569eac7486c9)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 7532eb4862956b8c78a6ec260554c39cc5108850)
 FetchContent_MakeAvailable(Yttrium)
 
 source_group("src" REGULAR_EXPRESSION "src/")
@@ -58,7 +58,7 @@ endif()
 
 yttrium_target_package(Blocks
 	GROUP "embed"
-	OUTPUT blocks.ypq
+	OUTPUT blocks.yp
 	INDEX data/index.txt
 	EMBED)
 

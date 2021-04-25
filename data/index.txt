@@ -1,4 +1,6 @@
-package
+compressor "zlib"
+
+files { compression "9" }
 [
 	"data/fonts/source_sans_pro.ttf"
 	"data/i18n/en.ion"
