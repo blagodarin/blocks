@@ -12,6 +12,8 @@
 #include <yttrium/gui/layout.h>
 #include <yttrium/renderer/2d.h>
 
+#include <seir_base/string_utils.hpp>
+
 void GameOverScreen::present(Yt::GuiFrame& gui)
 {
 	_game.drawBackground(gui.renderer());
@@ -25,7 +27,7 @@ void GameOverScreen::present(Yt::GuiFrame& gui)
 	if (std::exchange(_justStarted, false))
 		gui.putDefaultFocus();
 	const bool nameEntered = gui.addStringEdit("Name", _name, layout.add({ 14, 2 }));
-	Yt::strip(_name, nameEntered);
+	seir::normalizeWhitespace(_name, nameEntered ? seir::TrailingSpace::Remove : seir::TrailingSpace::Keep);
 	if (nameEntered && !_name.empty())
 	{
 		_game._topScores.emplace_back(_game._logic.score(), _name);

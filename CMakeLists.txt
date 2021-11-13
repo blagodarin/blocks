@@ -2,19 +2,19 @@
 # Copyright (C) Sergei Blagodarin.
 # SPDX-License-Identifier: Apache-2.0
 
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.21)
 
 project(Blocks VERSION 0.0.0.0 LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 20)
 
 set(YTTRIUM_AUDIO_AULOS ON)
 set(YTTRIUM_IMAGE_ICO ON)
 set(YTTRIUM_IMAGE_PNG ON) # For screenshots (not JPEG for smaller binary size).
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 1a89603b332398d54551445ec6dcf4a498b7359f)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 72a9321560a4a5b6dcd34be8de0f17d1e2e81cef)
 FetchContent_MakeAvailable(Yttrium)
+
+seir_defaults()
 
 source_group("src" REGULAR_EXPRESSION "src/")
 source_group("src/screens" REGULAR_EXPRESSION "src/screens/")
@@ -46,8 +46,8 @@ add_executable(Blocks WIN32
 	src/textures.cpp
 	src/textures.hpp
 	)
-target_link_libraries(Blocks PRIVATE Y_application Y_audio Y_gui Y_image Y_main Y_renderer Y_storage)
-set_target_properties(Blocks PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+target_link_libraries(Blocks PRIVATE Seir::base Y_application Y_audio Y_gui Y_image Y_main Y_renderer Y_storage)
+seir_target(Blocks STATIC_RUNTIME ON)
 
 if(WIN32)
 	configure_file(blocks.rc.in blocks.rc)
