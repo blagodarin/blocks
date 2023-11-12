@@ -23,7 +23,7 @@ void HelpScreen::present(Yt::GuiFrame& gui)
 	layout.skip(1);
 	if (gui.addButton("Back", "Back", layout.add({ 10, 2 })) || gui.takeKeyPress(Yt::Key::Escape))
 	{
-		_game._audio->play_sound(_game._cancelSound);
+		_game._audio->play(_game._cancelSound);
 		_game.setNextScreen(_game._mainMenuScreen);
 	}
 	layout.setSpacing(0);

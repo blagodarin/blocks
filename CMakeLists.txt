@@ -6,12 +6,12 @@ cmake_minimum_required(VERSION 3.21)
 
 project(Blocks VERSION 0.0.0.0 LANGUAGES CXX)
 
-set(YTTRIUM_AUDIO_AULOS ON)
+set(YTTRIUM_AUDIO_SEIRSYNTH ON)
 set(YTTRIUM_IMAGE_ICO ON)
 set(YTTRIUM_IMAGE_PNG ON) # For screenshots (not JPEG for smaller binary size).
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 72a9321560a4a5b6dcd34be8de0f17d1e2e81cef)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG dc9534c3f60e6d88a5d4ce97e9ee825ec8826eb9)
 FetchContent_MakeAvailable(Yttrium)
 
 seir_defaults()
@@ -46,7 +46,7 @@ add_executable(Blocks WIN32
 	src/textures.cpp
 	src/textures.hpp
 	)
-target_link_libraries(Blocks PRIVATE Seir::base Y_application Y_audio Y_gui Y_image Y_main Y_renderer Y_storage)
+target_link_libraries(Blocks PRIVATE Seir::audio Seir::base Seir::data Seir::image Seir::u8main Y_application Y_gui Y_image Y_renderer Y_storage)
 seir_target(Blocks STATIC_RUNTIME ON)
 
 if(WIN32)

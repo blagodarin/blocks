@@ -12,7 +12,8 @@
 
 void MainMenuScreen::start()
 {
-	_game._audio->play_music(_game._menuMusic);
+	_game._audio->stopAll();
+	_game._audio->play(_game._menuMusic);
 }
 
 void MainMenuScreen::present(Yt::GuiFrame& gui)
@@ -28,22 +29,22 @@ void MainMenuScreen::present(Yt::GuiFrame& gui)
 	layout.setSpacing(1);
 	if (gui.addButton("Play", "Play") || gui.takeKeyPress(Yt::Key::Enter))
 	{
-		_game._audio->play_sound(_game._okSound);
+		_game._audio->play(_game._okSound);
 		_game.setNextScreen(_game._playMenuScreen);
 	}
 	if (gui.addButton("Top Scores", "Top Scores"))
 	{
-		_game._audio->play_sound(_game._okSound);
+		_game._audio->play(_game._okSound);
 		_game.setNextScreen(_game._topScoresScreen);
 	}
 	if (gui.addButton("Controls", "Controls"))
 	{
-		_game._audio->play_sound(_game._okSound);
+		_game._audio->play(_game._okSound);
 		_game.setNextScreen(_game._helpScreen);
 	}
 	if (gui.addButton("Exit", "Exit") || gui.takeKeyPress(Yt::Key::Escape))
 	{
-		_game._audio->play_sound(_game._cancelSound);
+		_game._audio->play(_game._cancelSound);
 		_game.setNextScreen({});
 	}
 }

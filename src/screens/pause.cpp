@@ -28,12 +28,12 @@ void PauseScreen::present(Yt::GuiFrame& gui)
 	}
 	if (gui.addButton("Give up", "Give up"))
 	{
-		_game._audio->play_sound(_game._okSound);
+		_game._audio->play(_game._okSound);
 		_game.setNextScreen(_game._mainMenuScreen);
 	}
 	if (gui.addButton("Restart", "Restart"))
 	{
-		_game._audio->play_sound(_game._okSound);
+		_game._audio->play(_game._okSound);
 		_game._logic.start(_game._startLevel);
 		_game.setNextScreen(_game._gameScreen);
 	}

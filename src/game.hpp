@@ -7,8 +7,8 @@
 #include "graphics.hpp"
 #include "logic.hpp"
 
-#include <yttrium/audio/manager.h>
-#include <yttrium/audio/sound.h>
+#include <seir_audio/decoder.hpp>
+#include <seir_audio/player.hpp>
 
 #include <chrono>
 #include <memory>
@@ -20,8 +20,12 @@ namespace Yt
 	class GuiFrame;
 	class RenderManager;
 	class Renderer2D;
-	class Storage;
 	class Texture2D;
+}
+
+namespace seir
+{
+	class Storage;
 }
 
 class Screen;
@@ -38,21 +42,21 @@ public:
 	const std::unique_ptr<Screen> _topScoresScreen;
 	const std::unique_ptr<Screen> _helpScreen;
 
-	const std::shared_ptr<Yt::AudioManager> _audio;
-	const std::shared_ptr<Yt::AudioReader> _menuMusic;
-	const std::shared_ptr<Yt::AudioReader> _easyGameMusic;
-	const std::shared_ptr<Yt::AudioReader> _normalGameMusic;
-	const std::shared_ptr<Yt::AudioReader> _hardGameMusic;
-	const std::shared_ptr<Yt::AudioReader> _gameOverMusic;
-	const std::shared_ptr<Yt::Sound> _cancelSound;
-	const std::shared_ptr<Yt::Sound> _okSound;
+	const seir::UniquePtr<seir::AudioPlayer> _audio;
+	const seir::SharedPtr<seir::AudioDecoder> _menuMusic;
+	const seir::SharedPtr<seir::AudioDecoder> _easyGameMusic;
+	const seir::SharedPtr<seir::AudioDecoder> _normalGameMusic;
+	const seir::SharedPtr<seir::AudioDecoder> _hardGameMusic;
+	const seir::SharedPtr<seir::AudioDecoder> _gameOverMusic;
+	const seir::SharedPtr<seir::AudioDecoder> _cancelSound;
+	const seir::SharedPtr<seir::AudioDecoder> _okSound;
 
 	GameLogic _logic;
 	int _startLevel = 0;
 	GameGraphics _graphics;
 	std::vector<std::pair<int, std::string>> _topScores;
 
-	Game(Yt::Storage&, Yt::RenderManager&);
+	Game(seir::Storage&, Yt::RenderManager&);
 	~Game() noexcept;
 
 	void drawBackground(Yt::Renderer2D&) const;

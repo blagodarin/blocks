@@ -14,19 +14,33 @@
 #include "screens/top_scores.hpp"
 #include "textures.hpp"
 
-#include <yttrium/audio/reader.h>
 #include <yttrium/geometry/rect.h>
 #include <yttrium/gui/gui.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/manager.h>
 #include <yttrium/renderer/texture.h>
-#include <yttrium/storage/source.h>
-#include <yttrium/storage/storage.h>
+
+#include <seir_data/blob.hpp>
+#include <seir_data/storage.hpp>
 
 #include <cassert>
 
 namespace
 {
+	struct AudioCallbacks : public seir::AudioCallbacks
+	{
+		void onPlaybackError(seir::AudioError) override {}
+		void onPlaybackError(std::string&&) override {}
+		void onPlaybackStarted() override {}
+		void onPlaybackStopped() override {}
+	};
+
+	AudioCallbacks kAudioCallbacks;
+
+	const seir::AudioFormat kAudioFormat{ seir::AudioSampleType::f32, seir::AudioChannelLayout::Stereo, seir::AudioFormat::kMaxSamplingRate };
+	const seir::AudioDecoderPreferences kMusicPreferences{ .format = kAudioFormat, .loop = true };
+	const seir::AudioDecoderPreferences kSoundPreferences{ .format = kAudioFormat, .loop = false };
+
 	Yt::RectF scaleToFill(const Yt::SizeF& textureSize, const Yt::SizeF& rectSize)
 	{
 		const auto widthRatio = textureSize._width / rectSize._width;
@@ -41,7 +55,7 @@ namespace
 	}
 }
 
-Game::Game(Yt::Storage& storage, Yt::RenderManager& renderManager)
+Game::Game(seir::Storage& storage, Yt::RenderManager& renderManager)
 	: _logoScreen{ std::make_unique<LogoScreen>(*this) }
 	, _mainMenuScreen{ std::make_unique<MainMenuScreen>(*this) }
 	, _playMenuScreen{ std::make_unique<PlayMenuScreen>(*this) }
@@ -51,14 +65,14 @@ Game::Game(Yt::Storage& storage, Yt::RenderManager& renderManager)
 	, _topScoresScreen{ std::make_unique<TopScoresScreen>(*this) }
 	, _helpScreen{ std::make_unique<HelpScreen>(*this) }
 	, _graphics{ renderManager }
-	, _audio{ Yt::AudioManager::create() }
-	, _menuMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/prelude_in_g_minor.aulos"), true) }
-	, _easyGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/grande_valse_brillante.aulos"), true) }
-	, _normalGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/hungarian_dance.aulos"), true) }
-	, _hardGameMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/turkish_march.aulos"), true) }
-	, _gameOverMusic{ std::make_shared<Yt::AudioReader>(storage.open("data/music/fur_elise.aulos"), true) }
-	, _cancelSound{ _audio->create_sound(storage.open("data/sounds/cancel.aulos")) }
-	, _okSound{ _audio->create_sound(storage.open("data/sounds/ok.aulos")) }
+	, _audio{ seir::AudioPlayer::create(kAudioCallbacks) }
+	, _menuMusic{ seir::AudioDecoder::create(storage.open("data/music/prelude_in_g_minor.aulos"), kMusicPreferences) }
+	, _easyGameMusic{ seir::AudioDecoder::create(storage.open("data/music/grande_valse_brillante.aulos"), kMusicPreferences) }
+	, _normalGameMusic{ seir::AudioDecoder::create(storage.open("data/music/hungarian_dance.aulos"), kMusicPreferences) }
+	, _hardGameMusic{ seir::AudioDecoder::create(storage.open("data/music/turkish_march.aulos"), kMusicPreferences) }
+	, _gameOverMusic{ seir::AudioDecoder::create(storage.open("data/music/fur_elise.aulos"), kMusicPreferences) }
+	, _cancelSound{ seir::AudioDecoder::create(storage.open("data/sounds/cancel.aulos"), kSoundPreferences) }
+	, _okSound{ seir::AudioDecoder::create(storage.open("data/sounds/ok.aulos"), kSoundPreferences) }
 	, _backgroundTexture{ renderManager.create_texture_2d(::makeBackgroundTexture()) }
 	, _cursorTexture{ renderManager.create_texture_2d(::makeCursorTexture(64)) }
 {

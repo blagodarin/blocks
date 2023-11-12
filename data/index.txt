@@ -1,6 +1,6 @@
 compressor "zlib"
 
-files { compression "9" }
+files { compression "maximum" }
 [
 	"data/fonts/source_sans_pro.ttf"
 	"data/i18n/en.ion"

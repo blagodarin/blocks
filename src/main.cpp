@@ -9,21 +9,22 @@
 #include <yttrium/application/application.h>
 #include <yttrium/application/key.h>
 #include <yttrium/application/window.h>
-#include <yttrium/audio/format.h>
-#include <yttrium/audio/manager.h>
-#include <yttrium/audio/utils.h>
 #include <yttrium/base/logger.h>
 #include <yttrium/gui/context.h>
 #include <yttrium/gui/font.h>
 #include <yttrium/gui/gui.h>
 #include <yttrium/image/image.h>
-#include <yttrium/main.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/pass.h>
 #include <yttrium/renderer/viewport.h>
 #include <yttrium/storage/source.h>
 #include <yttrium/storage/storage.h>
 #include <yttrium/storage/writer.h>
+
+#include <seir_data/blob.hpp>
+#include <seir_data/storage.hpp>
+#include <seir_image/image.hpp>
+#include <seir_u8main/u8main.hpp>
 
 #include <future>
 
@@ -34,20 +35,18 @@ namespace
 	};
 }
 
-int ymain(int, char**)
+int u8main(int, char**)
 {
 	Yt::Logger logger;
-	Yt::Storage storage{ Yt::Storage::UseFileSystem::Never };
-	storage.attach_package(Yt::Source::from(kPackage, sizeof kPackage));
+	seir::Storage storage{ seir::Storage::UseFileSystem::Never };
+	storage.attachArchive(seir::Blob::from(kPackage, sizeof kPackage));
 	Yt::Application application;
 	Yt::Window window{ application, "Blocks" };
-	if (const auto iconSource = storage.open("data/icon.ico"))
-		if (const auto iconImage = Yt::Image::load(*iconSource))
-			window.set_icon(*iconImage);
+	if (const auto icon = seir::Image::load(storage.open("data/icon.ico")))
+		window.set_icon(*icon);
 	Yt::Viewport viewport{ window };
 	Yt::GuiContext gui{ window };
-	if (const auto fontSource = storage.open("data/fonts/source_sans_pro.ttf"))
-		gui.setDefaultFont(Yt::Font::load(*fontSource, viewport.render_manager()));
+	gui.setDefaultFont(Yt::Font::load(storage.open("data/fonts/source_sans_pro.ttf"), viewport.render_manager()));
 	Yt::Renderer2D rendered2d{ viewport };
 	Game game{ storage, viewport.render_manager() };
 	std::future<void> screenshotFuture;
