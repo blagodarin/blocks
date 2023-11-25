@@ -7,7 +7,6 @@
 #include "../game.hpp"
 
 #include <yttrium/application/key.h>
-#include <yttrium/base/string.h>
 #include <yttrium/gui/gui.h>
 #include <yttrium/gui/layout.h>
 #include <yttrium/renderer/2d.h>

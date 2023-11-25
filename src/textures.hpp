@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <yttrium/image/image.h>
+#include <seir_image/image.hpp>
 
-Yt::Image makeBackgroundTexture();
-Yt::Image makeCursorTexture(size_t size);
+seir::Image makeBackgroundTexture();
+seir::Image makeCursorTexture(uint32_t size);

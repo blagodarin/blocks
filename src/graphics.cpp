@@ -7,10 +7,11 @@
 #include <yttrium/geometry/margins.h>
 #include <yttrium/geometry/rect.h>
 #include <yttrium/geometry/vector.h>
-#include <yttrium/image/image.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/manager.h>
 #include <yttrium/renderer/texture.h>
+
+#include <seir_image/image.hpp>
 
 namespace
 {
@@ -93,16 +94,17 @@ namespace
 		return Rgb{ scale(0), scale(1), scale(2) };
 	}
 
-	Yt::Image makeBlocksImage()
+	seir::Image makeBlocksImage()
 	{
-		Yt::Image image({ FragmentSize, FragmentSize * FragmentCount, Yt::PixelFormat::Bgra32 });
+		const seir::ImageInfo info{ FragmentSize, FragmentSize * FragmentCount, seir::PixelFormat::Bgra32 };
+		seir::Buffer buffer{ info.frameSize() };
 		for (size_t i = 0; i < FragmentCount; ++i)
 		{
 			for (size_t y = 0; y < FragmentSize; ++y)
 			{
 				for (size_t x = 0; x < FragmentSize; ++x)
 				{
-					const auto pixel = static_cast<uint8_t*>(image.data()) + (i * FragmentSize + y) * image.info().stride() + x * 4;
+					const auto pixel = reinterpret_cast<uint8_t*>(buffer.data()) + (i * FragmentSize + y) * info.stride() + x * 4;
 					const auto color = ::pixelColor(i, x, y);
 					pixel[0] = color._b;
 					pixel[1] = color._g;
@@ -111,7 +113,7 @@ namespace
 				}
 			}
 		}
-		return image;
+		return { info, std::move(buffer) };
 	}
 
 	Yt::RectF blockRect(int index)

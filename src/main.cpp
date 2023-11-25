@@ -13,13 +13,9 @@
 #include <yttrium/gui/context.h>
 #include <yttrium/gui/font.h>
 #include <yttrium/gui/gui.h>
-#include <yttrium/image/image.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/pass.h>
 #include <yttrium/renderer/viewport.h>
-#include <yttrium/storage/source.h>
-#include <yttrium/storage/storage.h>
-#include <yttrium/storage/writer.h>
 
 #include <seir_data/blob.hpp>
 #include <seir_data/storage.hpp>
@@ -61,7 +57,7 @@ int u8main(int, char**)
 			rendered2d.draw(pass);
 		});
 		if (screenshot)
-			screenshotFuture = std::async(std::launch::async, [image = viewport.take_screenshot()] { image.save_as_screenshot(Yt::ImageFormat::Png, 100); });
+			screenshotFuture = std::async(std::launch::async, [image = viewport.take_screenshot()] { image.saveAsScreenshot(seir::ImageFormat::Png, 100); });
 	}
 	return 0;
 }
