@@ -4,7 +4,7 @@
 
 #include "textures.hpp"
 
-#include <yttrium/image/color.h>
+#include <seir_graphics/color.hpp>
 
 namespace
 {
@@ -50,7 +50,7 @@ seir::Image makeBackgroundTexture()
 			++i;
 		if (!((x ^ y) % 23))
 			++i;
-		return Yt::Bgra32{ 21 * i, 25 * i, 31 * i };
+		return seir::Rgba32{ 31 * i, 25 * i, 21 * i };
 	});
 }
 
@@ -58,12 +58,12 @@ seir::Image makeCursorTexture(uint32_t size)
 {
 	return ::generateBgra32(size, size, [size](uint32_t x, uint32_t y) {
 		if (y > 2 * x || 2 * y < x || (y > 2 * (size - x) && x > 2 * (size - y)))
-			return Yt::Bgra32{ 0, 0, 0, 0 };
+			return seir::Rgba32{ 0, 0, 0, 0 };
 		else
-			return Yt::Bgra32{
-				y * 0xff / (size - 1),
-				x * 0xff / (size - 1),
+			return seir::Rgba32{
 				(size * size - x * y) * 0xff / (size * size),
+				x * 0xff / (size - 1),
+				y * 0xff / (size - 1),
 			};
 	});
 }

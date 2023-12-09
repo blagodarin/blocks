@@ -46,7 +46,7 @@ add_executable(Blocks WIN32
 	src/textures.cpp
 	src/textures.hpp
 	)
-target_link_libraries(Blocks PRIVATE Seir::audio Seir::base Seir::data Seir::image Seir::u8main Y_application Y_gui Y_image Y_renderer)
+target_link_libraries(Blocks PRIVATE Seir::audio Seir::base Seir::data Seir::image Seir::u8main Y_application Y_gui Y_renderer)
 seir_target(Blocks STATIC_RUNTIME ON)
 
 if(WIN32)
@@ -59,7 +59,7 @@ endif()
 yttrium_target_package(Blocks
 	GROUP "embed"
 	OUTPUT blocks.yp
-	INDEX data/index.txt
+	INDEX data/index.st
 	EMBED)
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Blocks)

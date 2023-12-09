@@ -22,6 +22,7 @@
 
 #include <seir_data/blob.hpp>
 #include <seir_data/storage.hpp>
+#include <seir_graphics/color.hpp>
 
 #include <cassert>
 
@@ -89,7 +90,7 @@ void Game::drawBackground(Yt::Renderer2D& renderer) const
 {
 	renderer.setTexture(_backgroundTexture);
 	renderer.setTextureRect(::scaleToFill(Yt::SizeF{ _backgroundTexture->size() }, renderer.viewportSize()));
-	renderer.setColor(Yt::Bgra32::white());
+	renderer.setColor(seir::Rgba32::white());
 	renderer.addBorderlessRect(Yt::RectF{ renderer.viewportSize() });
 }
 
@@ -97,7 +98,7 @@ void Game::drawGraphics(Yt::GuiFrame& gui) const
 {
 	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 30, 26 } };
 	gui.selectBlankTexture();
-	gui.renderer().setColor(Yt::Bgra32::black(0x88));
+	gui.renderer().setColor(seir::Rgba32::black(0x88));
 	gui.renderer().addRect(layout.map({ { 1, 2 }, Yt::SizeF{ 6, 5 } }));
 	gui.renderer().addRect(layout.map({ { 10, 2 }, Yt::SizeF{ 10, 22 } }));
 	gui.renderer().addRect(layout.map({ { 23, 2 }, Yt::SizeF{ 6, 2 } }));
@@ -117,7 +118,7 @@ void Game::drawGraphics(Yt::GuiFrame& gui) const
 void Game::drawShade(Yt::GuiFrame& gui) const
 {
 	gui.selectBlankTexture();
-	gui.renderer().setColor(Yt::Bgra32::black(0x88));
+	gui.renderer().setColor(seir::Rgba32::black(0x88));
 	gui.renderer().addRect(Yt::RectF{ gui.renderer().viewportSize() });
 }
 
@@ -138,7 +139,7 @@ bool Game::present(Yt::GuiFrame& gui)
 	if (const auto cursor = gui.takeMouseCursor())
 	{
 		gui.renderer().setTexture(_cursorTexture);
-		gui.renderer().setColor(Yt::Bgra32::white());
+		gui.renderer().setColor(seir::Rgba32::white());
 		gui.renderer().addBorderlessRect({ *cursor, Yt::SizeF{ _cursorTexture->size() } });
 	}
 	return _nextScreen;
