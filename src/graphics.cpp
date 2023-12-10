@@ -6,12 +6,12 @@
 
 #include <yttrium/geometry/margins.h>
 #include <yttrium/geometry/rect.h>
-#include <yttrium/geometry/vector.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/manager.h>
 #include <yttrium/renderer/texture.h>
 
 #include <seir_image/image.hpp>
+#include <seir_math/vec.hpp>
 
 namespace
 {
@@ -171,7 +171,7 @@ void GameGraphics::drawFieldBlocks(Yt::Renderer2D& renderer, const Yt::RectF& re
 
 void GameGraphics::drawFieldFigure(Yt::Renderer2D& renderer, const Yt::RectF& rect, const Yt::SizeF& block_size, const GameLogic::Figure& figure) const
 {
-	static const Yt::Vector2 frameOffset{ 1, GameLogic::Field::Height };
+	static const seir::Vec2 frameOffset{ 1, GameLogic::Field::Height };
 	if (figure.type() == GameLogic::Figure::None)
 		return;
 	setTextureRect(renderer, figure.type());

@@ -49,10 +49,10 @@ namespace
 		if (widthRatio < heightRatio)
 		{
 			const auto offsetY = (textureSize._height - rectSize._height * widthRatio) / 2;
-			return Yt::RectF{ { 0, offsetY }, Yt::Vector2{ textureSize._width, textureSize._height - offsetY } };
+			return Yt::RectF{ { 0, offsetY }, seir::Vec2{ textureSize._width, textureSize._height - offsetY } };
 		}
 		const auto offsetX = (textureSize._width - rectSize._width * heightRatio) / 2;
-		return Yt::RectF{ { offsetX, 0 }, Yt::Vector2{ textureSize._width - offsetX, textureSize._height } };
+		return Yt::RectF{ { offsetX, 0 }, seir::Vec2{ textureSize._width - offsetX, textureSize._height } };
 	}
 }
 
