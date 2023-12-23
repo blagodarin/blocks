@@ -4,12 +4,11 @@
 
 #include "graphics.hpp"
 
-#include <yttrium/geometry/margins.h>
-#include <yttrium/geometry/rect.h>
 #include <yttrium/renderer/2d.h>
 #include <yttrium/renderer/manager.h>
 #include <yttrium/renderer/texture.h>
 
+#include <seir_graphics/rectf.hpp>
 #include <seir_image/image.hpp>
 #include <seir_math/vec.hpp>
 
@@ -116,9 +115,9 @@ namespace
 		return { info, std::move(buffer) };
 	}
 
-	Yt::RectF blockRect(int index)
+	seir::RectF blockRect(int index)
 	{
-		return { { 1, static_cast<float>(index) * FragmentSize + 1.f }, Yt::SizeF{ FragmentSize - 2, FragmentSize - 2 } };
+		return { { 1, static_cast<float>(index) * FragmentSize + 1.f }, seir::SizeF{ FragmentSize - 2, FragmentSize - 2 } };
 	}
 }
 
@@ -127,34 +126,34 @@ GameGraphics::GameGraphics(Yt::RenderManager& manager)
 {
 }
 
-void GameGraphics::drawField(Yt::Renderer2D& renderer, const Yt::RectF& rect, const GameLogic::Field& field, const GameLogic::Figure& currentFigure) const
+void GameGraphics::drawField(Yt::Renderer2D& renderer, const seir::RectF& rect, const GameLogic::Field& field, const GameLogic::Figure& currentFigure) const
 {
 	static const int totalWidth = 1 + GameLogic::Field::Width + 1;
 	static const int totalHeight = 1 + GameLogic::Field::Height + 1;
-	const Yt::SizeF blockSize{ rect.width() / totalWidth, rect.height() / totalHeight };
+	const seir::SizeF blockSize{ rect.width() / totalWidth, rect.height() / totalHeight };
 	renderer.setTexture(_blocksTexture);
 	drawFieldBlocks(renderer, rect, blockSize, field);
 	drawFieldFigure(renderer, rect, blockSize, currentFigure);
 	drawFieldFrame(renderer, rect, blockSize);
 }
 
-void GameGraphics::drawNextFigure(Yt::Renderer2D& renderer, const Yt::RectF& rect, const GameLogic::Figure& figure) const
+void GameGraphics::drawNextFigure(Yt::Renderer2D& renderer, const seir::RectF& rect, const GameLogic::Figure& figure) const
 {
 	if (figure.type() == GameLogic::Figure::None)
 		return;
 	renderer.setTexture(_blocksTexture);
 	setTextureRect(renderer, figure.type());
-	const Yt::SizeF blockSize{ rect.width() / 4, rect.height() / 2 };
+	const seir::SizeF blockSize{ rect.width() / 4, rect.height() / 2 };
 	for (const auto& block : figure.blocks())
 		drawBlock(renderer, rect, blockSize, block.x, 1 - block.y / GameLogic::PointsPerRow);
 }
 
-void GameGraphics::drawBlock(Yt::Renderer2D& renderer, const Yt::RectF& rect, const Yt::SizeF& blockSize, float x, float y) const
+void GameGraphics::drawBlock(Yt::Renderer2D& renderer, const seir::RectF& rect, const seir::SizeF& blockSize, float x, float y) const
 {
 	renderer.addRect({ { rect.left() + x * blockSize._width, rect.top() + y * blockSize._height }, blockSize });
 }
 
-void GameGraphics::drawFieldBlocks(Yt::Renderer2D& renderer, const Yt::RectF& rect, const Yt::SizeF& block_size, const GameLogic::Field& field) const
+void GameGraphics::drawFieldBlocks(Yt::Renderer2D& renderer, const seir::RectF& rect, const seir::SizeF& block_size, const GameLogic::Field& field) const
 {
 	for (int y = 0; y < GameLogic::Field::Height; ++y)
 	{
@@ -169,7 +168,7 @@ void GameGraphics::drawFieldBlocks(Yt::Renderer2D& renderer, const Yt::RectF& re
 	}
 }
 
-void GameGraphics::drawFieldFigure(Yt::Renderer2D& renderer, const Yt::RectF& rect, const Yt::SizeF& block_size, const GameLogic::Figure& figure) const
+void GameGraphics::drawFieldFigure(Yt::Renderer2D& renderer, const seir::RectF& rect, const seir::SizeF& block_size, const GameLogic::Figure& figure) const
 {
 	static const seir::Vec2 frameOffset{ 1, GameLogic::Field::Height };
 	if (figure.type() == GameLogic::Figure::None)
@@ -180,7 +179,7 @@ void GameGraphics::drawFieldFigure(Yt::Renderer2D& renderer, const Yt::RectF& re
 			drawBlock(renderer, rect, block_size, frameOffset.x + static_cast<float>(block.x), frameOffset.y - static_cast<float>(block.y) / GameLogic::PointsPerRow);
 }
 
-void GameGraphics::drawFieldFrame(Yt::Renderer2D& renderer, const Yt::RectF& rect, const Yt::SizeF& blockSize) const
+void GameGraphics::drawFieldFrame(Yt::Renderer2D& renderer, const seir::RectF& rect, const seir::SizeF& blockSize) const
 {
 	static const int totalWidth = 1 + GameLogic::Field::Width + 1;
 	static const int totalHeight = 1 + GameLogic::Field::Height + 1;

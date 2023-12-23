@@ -20,7 +20,7 @@ void LogoScreen::present(Yt::GuiFrame& gui)
 	const auto duration = std::min(std::chrono::steady_clock::now() - _startTime, maxDuration);
 	gui.selectBlankTexture();
 	gui.renderer().setColor(seir::Rgba32::black());
-	gui.renderer().addBorderlessRect(Yt::RectF{ gui.renderer().viewportSize() });
+	gui.renderer().addBorderlessRect(seir::RectF{ gui.renderer().viewportSize() });
 	Yt::GuiLabelStyle style;
 	style._fontSize = 1;
 	const auto value = std::sin(std::numbers::pi * static_cast<double>(duration.count()) / static_cast<double>(maxDuration.count()));
