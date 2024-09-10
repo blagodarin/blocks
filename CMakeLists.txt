@@ -11,7 +11,7 @@ set(YTTRIUM_IMAGE_ICO ON)
 set(YTTRIUM_IMAGE_PNG ON) # For screenshots (not JPEG for smaller binary size).
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 36a1ebedccf820d8199c2e7f558841fd21fd73d3)
+FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 56c9ea28d51dd62c9eace7ddc99bf937db1decbb)
 FetchContent_MakeAvailable(Yttrium)
 
 seir_defaults()
@@ -46,7 +46,7 @@ add_executable(Blocks WIN32
 	src/textures.cpp
 	src/textures.hpp
 	)
-target_link_libraries(Blocks PRIVATE Seir::audio Seir::base Seir::data Seir::image Seir::math Seir::u8main Y_application Y_gui Y_renderer)
+target_link_libraries(Blocks PRIVATE Seir::app Seir::audio Seir::base Seir::data Seir::graphics Seir::gui Seir::image Seir::math Seir::renderer Seir::u8main)
 seir_target(Blocks STATIC_RUNTIME ON)
 
 if(WIN32)

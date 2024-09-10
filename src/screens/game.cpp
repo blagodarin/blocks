@@ -6,35 +6,34 @@
 
 #include "../game.hpp"
 
-#include <yttrium/application/key.h>
-#include <yttrium/gui/gui.h>
-#include <yttrium/renderer/2d.h>
-
-#include <cassert>
+#include <seir_app/events.hpp>
+#include <seir_gui/frame.hpp>
+#include <seir_math/vec.hpp>
+#include <seir_renderer/2d.hpp>
 
 void GameScreen::start()
 {
 	if (!_game._logic.is_active())
 		_game._logic.start(_game._startLevel);
-	_clock = Yt::Clock{};
+	_clock.reset();
 }
 
-void GameScreen::present(Yt::GuiFrame& gui)
+void GameScreen::present(seir::GuiFrame& gui)
 {
-	_game._logic.advance(_clock.tick());
+	_game._logic.advance(_clock.advance());
 	if (!_game._logic.has_finished())
 	{
-		if (gui.takeKeyPress(Yt::Key::Left))
+		if (gui.takeKeyPress(seir::Key::Left))
 			_game._logic.turn_left();
-		if (gui.takeKeyPress(Yt::Key::Right))
+		if (gui.takeKeyPress(seir::Key::Right))
 			_game._logic.turn_right();
-		if (const auto state = gui.takeKeyState(Yt::Key::A))
+		if (const auto state = gui.takeKeyState(seir::Key::A))
 			_game._logic.set_left_movement(*state);
-		if (const auto state = gui.takeKeyState(Yt::Key::D))
+		if (const auto state = gui.takeKeyState(seir::Key::D))
 			_game._logic.set_right_movement(*state);
-		if (const auto state = gui.takeKeyState(Yt::Key::S))
+		if (const auto state = gui.takeKeyState(seir::Key::S))
 			_game._logic.set_acceleration(*state);
-		if (gui.takeKeyPress(Yt::Key::Escape))
+		if (gui.takeKeyPress(seir::Key::Escape))
 		{
 			_game._logic.pause();
 			_game.setNextScreen(_game._pauseScreen);
@@ -46,7 +45,7 @@ void GameScreen::present(Yt::GuiFrame& gui)
 		_game._audio->play(_game._gameOverMusic);
 		_game.setNextScreen(_game._logic.score() > _game._topScores.back().first ? _game._gameOverScreen : _game._topScoresScreen);
 	}
-	_game.drawBackground(gui.renderer());
+	_game.drawBackground(gui);
 	_game.drawGraphics(gui);
 	gui.takeMouseCursor();
 }

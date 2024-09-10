@@ -13,5 +13,5 @@ public:
 		: Screen{ game } {}
 
 	void start() override;
-	void present(Yt::GuiFrame&) override;
+	void present(seir::GuiFrame&) override;
 };

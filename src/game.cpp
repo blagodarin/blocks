@@ -14,14 +14,14 @@
 #include "screens/top_scores.hpp"
 #include "textures.hpp"
 
-#include <yttrium/gui/gui.h>
-#include <yttrium/renderer/2d.h>
-#include <yttrium/renderer/manager.h>
-#include <yttrium/renderer/texture.h>
-
 #include <seir_data/blob.hpp>
 #include <seir_data/storage.hpp>
 #include <seir_graphics/color.hpp>
+#include <seir_graphics/rectf.hpp>
+#include <seir_gui/frame.hpp>
+#include <seir_gui/layout.hpp>
+#include <seir_renderer/2d.hpp>
+#include <seir_renderer/renderer.hpp>
 
 #include <cassert>
 
@@ -55,7 +55,7 @@ namespace
 	}
 }
 
-Game::Game(seir::Storage& storage, Yt::RenderManager& renderManager)
+Game::Game(seir::Storage& storage, seir::Renderer& renderer)
 	: _logoScreen{ std::make_unique<LogoScreen>(*this) }
 	, _mainMenuScreen{ std::make_unique<MainMenuScreen>(*this) }
 	, _playMenuScreen{ std::make_unique<PlayMenuScreen>(*this) }
@@ -64,7 +64,7 @@ Game::Game(seir::Storage& storage, Yt::RenderManager& renderManager)
 	, _gameOverScreen{ std::make_unique<GameOverScreen>(*this) }
 	, _topScoresScreen{ std::make_unique<TopScoresScreen>(*this) }
 	, _helpScreen{ std::make_unique<HelpScreen>(*this) }
-	, _graphics{ renderManager }
+	, _graphics{ renderer }
 	, _audio{ seir::AudioPlayer::create(kAudioCallbacks) }
 	, _menuMusic{ seir::AudioDecoder::create(storage.open("data/music/prelude_in_g_minor.aulos"), kMusicPreferences) }
 	, _easyGameMusic{ seir::AudioDecoder::create(storage.open("data/music/grande_valse_brillante.aulos"), kMusicPreferences) }
@@ -73,8 +73,8 @@ Game::Game(seir::Storage& storage, Yt::RenderManager& renderManager)
 	, _gameOverMusic{ seir::AudioDecoder::create(storage.open("data/music/fur_elise.aulos"), kMusicPreferences) }
 	, _cancelSound{ seir::AudioDecoder::create(storage.open("data/sounds/cancel.aulos"), kSoundPreferences) }
 	, _okSound{ seir::AudioDecoder::create(storage.open("data/sounds/ok.aulos"), kSoundPreferences) }
-	, _backgroundTexture{ renderManager.create_texture_2d(::makeBackgroundTexture()) }
-	, _cursorTexture{ renderManager.create_texture_2d(::makeCursorTexture(64)) }
+	, _backgroundTexture{ renderer.createTexture2D(::makeBackgroundTexture()) }
+	, _cursorTexture{ renderer.createTexture2D(::makeCursorTexture(64)) }
 {
 	_topScores.emplace_back(250'000, "Grandm\xc3\xa6ster");
 	_topScores.emplace_back(200'000, "Master");
@@ -85,40 +85,45 @@ Game::Game(seir::Storage& storage, Yt::RenderManager& renderManager)
 
 Game::~Game() = default;
 
-void Game::drawBackground(Yt::Renderer2D& renderer) const
+void Game::drawBackground(seir::GuiFrame& gui) const
 {
-	renderer.setTexture(_backgroundTexture);
-	renderer.setTextureRect(::scaleToFill(seir::SizeF{ _backgroundTexture->size() }, renderer.viewportSize()));
-	renderer.setColor(seir::Rgba32::white());
-	renderer.addBorderlessRect(seir::RectF{ renderer.viewportSize() });
+	gui.renderer().setTexture(_backgroundTexture);
+	gui.renderer().setTextureRect(::scaleToFill(seir::SizeF{ _backgroundTexture->size() }, gui.size()));
+	gui.renderer().setColor(seir::Rgba32::white());
+	gui.renderer().addRect(seir::RectF{ gui.size() });
 }
 
-void Game::drawGraphics(Yt::GuiFrame& gui) const
+void Game::drawGraphics(seir::GuiFrame& gui) const
 {
-	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 30, 26 } };
-	gui.selectBlankTexture();
+	seir::GuiLayout layout{ gui, seir::GuiLayout::Center{ 30, 26 } };
+	gui.selectWhiteTexture();
 	gui.renderer().setColor(seir::Rgba32::black(0x88));
 	gui.renderer().addRect(layout.map({ { 1, 2 }, seir::SizeF{ 6, 5 } }));
 	gui.renderer().addRect(layout.map({ { 10, 2 }, seir::SizeF{ 10, 22 } }));
 	gui.renderer().addRect(layout.map({ { 23, 2 }, seir::SizeF{ 6, 2 } }));
 	gui.renderer().addRect(layout.map({ { 23, 6 }, seir::SizeF{ 6, 2 } }));
 	gui.renderer().addRect(layout.map({ { 23, 10 }, seir::SizeF{ 6, 2 } }));
-	gui.addLabel("Next:", Yt::GuiAlignment::Left, layout.map({ { 1.5, 2 }, seir::SizeF{ 5, 1 } }));
-	gui.addLabel("Level:", Yt::GuiAlignment::Left, layout.map({ { 23.5, 2 }, seir::SizeF{ 5, 1 } }));
-	gui.addLabel(std::to_string(_logic.level()), Yt::GuiAlignment::Right, layout.map({ { 23.5, 3 }, seir::SizeF{ 5, 1 } }));
-	gui.addLabel("Lines:", Yt::GuiAlignment::Left, layout.map({ { 23.5, 6 }, seir::SizeF{ 5, 1 } }));
-	gui.addLabel(std::to_string(_logic.lines()), Yt::GuiAlignment::Right, layout.map({ { 23.5, 7 }, seir::SizeF{ 5, 1 } }));
-	gui.addLabel("Score:", Yt::GuiAlignment::Left, layout.map({ { 23.5, 10 }, seir::SizeF{ 5, 1 } }));
-	gui.addLabel(std::to_string(_logic.score()), Yt::GuiAlignment::Right, layout.map({ { 23.5, 11 }, seir::SizeF{ 5, 1 } }));
+	layout.setItemSize({ 5, 1 });
+	layout.fromPoint({ 1.5, 2 }, { 1, 1 }, seir::GuiLayout::Axis::X);
+	gui.addLabel("Next:");
+	layout.fromPoint({ 23.5, 2 }, { 1, 1 }, seir::GuiLayout::Axis::Y);
+	layout.setItemSpacing(3);
+	gui.addLabel("Level:");
+	gui.addLabel("Lines:");
+	gui.addLabel("Score:");
+	layout.fromPoint({ 23.5, 3 }, { 1, 1 }, seir::GuiLayout::Axis::Y);
+	gui.addLabel(std::to_string(_logic.level()), seir::GuiAlignment::Right);
+	gui.addLabel(std::to_string(_logic.lines()), seir::GuiAlignment::Right);
+	gui.addLabel(std::to_string(_logic.score()), seir::GuiAlignment::Right);
 	_graphics.drawField(gui.renderer(), layout.map({ { 9, 1 }, seir::SizeF{ 12, 24 } }), _logic.field(), _logic.current_figure());
 	_graphics.drawNextFigure(gui.renderer(), layout.map({ { 2, 4 }, seir::SizeF{ 4, 2 } }), _logic.next_figure());
 }
 
-void Game::drawShade(Yt::GuiFrame& gui) const
+void Game::drawShade(seir::GuiFrame& gui) const
 {
-	gui.selectBlankTexture();
+	gui.selectWhiteTexture();
 	gui.renderer().setColor(seir::Rgba32::black(0x88));
-	gui.renderer().addRect(seir::RectF{ gui.renderer().viewportSize() });
+	gui.renderer().addRect(seir::RectF{ gui.size() });
 }
 
 void Game::setNextScreen(const std::unique_ptr<Screen>& screen)
@@ -126,7 +131,7 @@ void Game::setNextScreen(const std::unique_ptr<Screen>& screen)
 	_nextScreen = screen.get();
 }
 
-bool Game::present(Yt::GuiFrame& gui)
+bool Game::present(seir::GuiFrame& gui)
 {
 	if (_currentScreen != _nextScreen)
 	{
@@ -139,7 +144,7 @@ bool Game::present(Yt::GuiFrame& gui)
 	{
 		gui.renderer().setTexture(_cursorTexture);
 		gui.renderer().setColor(seir::Rgba32::white());
-		gui.renderer().addBorderlessRect({ *cursor, seir::SizeF{ _cursorTexture->size() } });
+		gui.renderer().addRect({ *cursor, seir::SizeF{ _cursorTexture->size() } });
 	}
 	return _nextScreen;
 }

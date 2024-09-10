@@ -6,22 +6,22 @@
 
 #include "../game.hpp"
 
-#include <yttrium/application/key.h>
-#include <yttrium/gui/gui.h>
-#include <yttrium/gui/layout.h>
+#include <seir_app/events.hpp>
+#include <seir_gui/frame.hpp>
+#include <seir_gui/layout.hpp>
 
-void PlayMenuScreen::present(Yt::GuiFrame& gui)
+void PlayMenuScreen::present(seir::GuiFrame& gui)
 {
-	_game.drawBackground(gui.renderer());
-	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 30, 26 } };
+	_game.drawBackground(gui);
+	seir::GuiLayout layout{ gui, seir::GuiLayout::Center{ 30, 26 } };
 	layout.fromTopCenter();
 	layout.skip(1);
-	layout.setSize({ 30, 10 });
-	gui.addLabel("Blocks", Yt::GuiAlignment::Center);
+	layout.setItemSize({ 30, 10 });
+	gui.addLabel("Blocks", seir::GuiAlignment::Center);
 	layout.skip(1);
-	layout.setSize({ 10, 2 });
-	layout.setSpacing(1);
-	if (gui.addButton("Back", "Back") || gui.takeKeyPress(Yt::Key::Escape))
+	layout.setItemSize({ 10, 2 });
+	layout.setItemSpacing(1);
+	if (gui.addButton("Back", "Back") || gui.takeKeyPress(seir::Key::Escape))
 	{
 		_game._audio->play(_game._cancelSound);
 		_game.setNextScreen(_game._mainMenuScreen);

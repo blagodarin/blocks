@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Yt
+namespace seir
 {
 	class GuiFrame;
 }
@@ -19,7 +19,7 @@ public:
 
 	virtual ~Screen() noexcept = default;
 	virtual void start() {}
-	virtual void present(Yt::GuiFrame&) = 0;
+	virtual void present(seir::GuiFrame&) = 0;
 
 protected:
 	Game& _game;

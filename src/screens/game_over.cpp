@@ -6,26 +6,27 @@
 
 #include "../game.hpp"
 
-#include <yttrium/application/key.h>
-#include <yttrium/gui/gui.h>
-#include <yttrium/gui/layout.h>
-#include <yttrium/renderer/2d.h>
-
+#include <seir_app/events.hpp>
 #include <seir_base/string_utils.hpp>
+#include <seir_gui/frame.hpp>
+#include <seir_gui/layout.hpp>
+#include <seir_renderer/2d.hpp>
 
-void GameOverScreen::present(Yt::GuiFrame& gui)
+void GameOverScreen::present(seir::GuiFrame& gui)
 {
-	_game.drawBackground(gui.renderer());
+	_game.drawBackground(gui);
 	_game.drawGraphics(gui);
 	_game.drawShade(gui);
-	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Center{ 30, 26 } };
+	seir::GuiLayout layout{ gui, seir::GuiLayout::Center{ 30, 26 } };
 	layout.fromTopCenter();
 	layout.skip(11);
-	gui.addLabel("Enter your name:", Yt::GuiAlignment::Center, layout.add({ 0, 2 }));
+	layout.setItemSize({ 0, 2 });
+	gui.addLabel("Enter your name:", seir::GuiAlignment::Center);
 	layout.skip(0.5);
 	if (std::exchange(_justStarted, false))
-		gui.putDefaultFocus();
-	const bool nameEntered = gui.addStringEdit("Name", _name, layout.add({ 14, 2 }));
+		gui.putKeyboardFocus();
+	layout.setItemSize({ 14, 2 });
+	const bool nameEntered = gui.addStringEdit("Name", _name);
 	seir::normalizeWhitespace(_name, nameEntered ? seir::TrailingSpace::Remove : seir::TrailingSpace::Keep);
 	if (nameEntered && !_name.empty())
 	{
@@ -34,6 +35,6 @@ void GameOverScreen::present(Yt::GuiFrame& gui)
 		_game._topScores.pop_back();
 		_game.setNextScreen(_game._topScoresScreen);
 	}
-	if (gui.takeKeyPress(Yt::Key::Escape))
+	if (gui.takeKeyPress(seir::Key::Escape))
 		_game.setNextScreen(_game._mainMenuScreen);
 }

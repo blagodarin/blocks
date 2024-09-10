@@ -15,7 +15,7 @@ public:
 		: Screen{ game } {}
 
 	void start() override { _justStarted = true; }
-	void present(Yt::GuiFrame&) override;
+	void present(seir::GuiFrame&) override;
 
 private:
 	bool _justStarted = false;

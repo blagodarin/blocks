@@ -6,7 +6,7 @@
 
 #include "../screen.hpp"
 
-#include <yttrium/base/clock.h>
+#include <seir_base/clock.hpp>
 
 class GameScreen final : public Screen
 {
@@ -15,8 +15,8 @@ public:
 		: Screen{ game } {}
 
 	void start() override;
-	void present(Yt::GuiFrame&) override;
+	void present(seir::GuiFrame&) override;
 
 private:
-	Yt::Clock _clock;
+	seir::ConstantRate<> _clock{ std::chrono::milliseconds{ 1 } };
 };

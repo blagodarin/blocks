@@ -19,7 +19,7 @@ public:
 		_startTime = std::chrono::steady_clock::now();
 	}
 
-	void present(Yt::GuiFrame&) override;
+	void present(seir::GuiFrame&) override;
 
 private:
 	std::chrono::steady_clock::time_point _startTime;

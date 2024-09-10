@@ -4,39 +4,35 @@
 
 #pragma once
 
-#include "logic.hpp"
+#include <seir_base/shared_ptr.hpp>
 
-#include <memory>
+#include "logic.hpp"
 
 namespace seir
 {
 	class RectF;
-	class SizeF;
-}
-
-namespace Yt
-{
-	class RenderManager;
+	class Renderer;
 	class Renderer2D;
+	class SizeF;
 	class Texture2D;
 }
 
 class GameGraphics
 {
 public:
-	explicit GameGraphics(Yt::RenderManager&);
+	explicit GameGraphics(seir::Renderer&);
 
-	void drawField(Yt::Renderer2D&, const seir::RectF&, const GameLogic::Field&, const GameLogic::Figure&) const;
-	void drawNextFigure(Yt::Renderer2D&, const seir::RectF&, const GameLogic::Figure&) const;
-
-private:
-	void drawBlock(Yt::Renderer2D&, const seir::RectF&, const seir::SizeF& block_size, float x, float y) const;
-	void drawBlock(Yt::Renderer2D& context, const seir::RectF& rect, const seir::SizeF& block_size, int x, int y) const { drawBlock(context, rect, block_size, static_cast<float>(x), static_cast<float>(y)); }
-	void drawFieldBlocks(Yt::Renderer2D&, const seir::RectF&, const seir::SizeF& block_size, const GameLogic::Field&) const;
-	void drawFieldFigure(Yt::Renderer2D&, const seir::RectF&, const seir::SizeF& block_size, const GameLogic::Figure&) const;
-	void drawFieldFrame(Yt::Renderer2D&, const seir::RectF&, const seir::SizeF& block_size) const;
-	void setTextureRect(Yt::Renderer2D&, GameLogic::Figure::Type) const;
+	void drawField(seir::Renderer2D&, const seir::RectF&, const GameLogic::Field&, const GameLogic::Figure&) const;
+	void drawNextFigure(seir::Renderer2D&, const seir::RectF&, const GameLogic::Figure&) const;
 
 private:
-	const std::shared_ptr<const Yt::Texture2D> _blocksTexture;
+	void drawBlock(seir::Renderer2D&, const seir::RectF&, const seir::SizeF& blockSize, float x, float y) const;
+	void drawBlock(seir::Renderer2D& context, const seir::RectF& rect, const seir::SizeF& blockSize, int x, int y) const { drawBlock(context, rect, blockSize, static_cast<float>(x), static_cast<float>(y)); }
+	void drawFieldBlocks(seir::Renderer2D&, const seir::RectF&, const seir::SizeF& blockSize, const GameLogic::Field&) const;
+	void drawFieldFigure(seir::Renderer2D&, const seir::RectF&, const seir::SizeF& blockSize, const GameLogic::Figure&) const;
+	void drawFieldFrame(seir::Renderer2D&, const seir::RectF&, const seir::SizeF& blockSize) const;
+	void setTextureRect(seir::Renderer2D&, GameLogic::Figure::Type) const;
+
+private:
+	const seir::SharedPtr<seir::Texture2D> _blocksTexture;
 };

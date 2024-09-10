@@ -12,5 +12,5 @@ public:
 	explicit PauseScreen(Game& game) noexcept
 		: Screen{ game } {}
 
-	void present(Yt::GuiFrame&) override;
+	void present(seir::GuiFrame&) override;
 };

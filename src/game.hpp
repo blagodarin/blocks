@@ -15,17 +15,13 @@
 #include <string>
 #include <vector>
 
-namespace Yt
-{
-	class GuiFrame;
-	class RenderManager;
-	class Renderer2D;
-	class Texture2D;
-}
-
 namespace seir
 {
+	class GuiFrame;
+	class Renderer;
+	class Renderer2D;
 	class Storage;
+	class Texture2D;
 }
 
 class Screen;
@@ -56,19 +52,19 @@ public:
 	GameGraphics _graphics;
 	std::vector<std::pair<int, std::string>> _topScores;
 
-	Game(seir::Storage&, Yt::RenderManager&);
+	Game(seir::Storage&, seir::Renderer&);
 	~Game() noexcept;
 
-	void drawBackground(Yt::Renderer2D&) const;
-	void drawGraphics(Yt::GuiFrame&) const;
-	void drawShade(Yt::GuiFrame&) const;
+	void drawBackground(seir::GuiFrame&) const;
+	void drawGraphics(seir::GuiFrame&) const;
+	void drawShade(seir::GuiFrame&) const;
 	void setNextScreen(const std::unique_ptr<Screen>&);
 
-	bool present(Yt::GuiFrame&);
+	bool present(seir::GuiFrame&);
 
 private:
-	const std::shared_ptr<const Yt::Texture2D> _backgroundTexture;
-	const std::shared_ptr<const Yt::Texture2D> _cursorTexture;
+	const seir::SharedPtr<seir::Texture2D> _backgroundTexture;
+	const seir::SharedPtr<seir::Texture2D> _cursorTexture;
 	Screen* _currentScreen = nullptr;
 	Screen* _nextScreen = _logoScreen.get();
 };

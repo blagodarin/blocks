@@ -6,31 +6,31 @@
 
 #include "../game.hpp"
 
-#include <yttrium/application/key.h>
-#include <yttrium/gui/gui.h>
-#include <yttrium/gui/layout.h>
-#include <yttrium/gui/style.h>
-#include <yttrium/renderer/2d.h>
+#include <seir_app/events.hpp>
+#include <seir_gui/frame.hpp>
+#include <seir_gui/layout.hpp>
+#include <seir_gui/style.hpp>
+#include <seir_renderer/2d.hpp>
 
 #include <numbers>
 
-void LogoScreen::present(Yt::GuiFrame& gui)
+void LogoScreen::present(seir::GuiFrame& gui)
 {
 	constexpr std::chrono::steady_clock::duration maxDuration{ std::chrono::seconds{ 2 } };
 	const auto duration = std::min(std::chrono::steady_clock::now() - _startTime, maxDuration);
-	gui.selectBlankTexture();
+	gui.selectWhiteTexture();
 	gui.renderer().setColor(seir::Rgba32::black());
-	gui.renderer().addBorderlessRect(seir::RectF{ gui.renderer().viewportSize() });
-	Yt::GuiLabelStyle style;
+	gui.renderer().addRect(seir::RectF{ gui.size() });
+	seir::GuiLabelStyle style;
 	style._fontSize = 1;
 	const auto value = std::sin(std::numbers::pi * static_cast<double>(duration.count()) / static_cast<double>(maxDuration.count()));
 	style._textColor = seir::Rgba32::white(static_cast<uint8_t>(std::lround(255 * value * value)));
 	gui.setLabelStyle(style);
-	Yt::GuiLayout layout{ gui, Yt::GuiLayout::Height{ 26 } };
+	seir::GuiLayout layout{ gui, seir::GuiLayout::Height{ 26 } };
 	layout.fromTopCenter();
 	layout.skip(12);
-	layout.setSize({ 0, 2 });
-	gui.addLabel("Powered by Yttrium", Yt::GuiAlignment::Center);
+	layout.setItemSize({ 0, 2 });
+	gui.addLabel("Powered by Seir", seir::GuiAlignment::Center);
 	if (gui.takeAnyKeyPress() || duration == maxDuration)
 		_game.setNextScreen(_game._mainMenuScreen);
 	gui.takeMouseCursor();
