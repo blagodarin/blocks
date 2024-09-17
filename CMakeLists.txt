@@ -2,23 +2,21 @@
 # Copyright (C) Sergei Blagodarin.
 # SPDX-License-Identifier: Apache-2.0
 
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.25)
 
 project(Blocks VERSION 0.0.0.0 LANGUAGES CXX)
 
-set(YTTRIUM_AUDIO_SEIRSYNTH ON)
-set(YTTRIUM_IMAGE_ICO ON)
-set(YTTRIUM_IMAGE_PNG ON) # For screenshots (not JPEG for smaller binary size).
+set(SEIR_IMAGE_ICO ON)
+set(SEIR_IMAGE_PNG ON) # For screenshots (not JPEG for smaller binary size).
+set(SEIR_STATIC_RUNTIME ON)
 
 include(FetchContent)
-FetchContent_Declare(Yttrium GIT_REPOSITORY https://github.com/blagodarin/yttrium.git GIT_TAG 56c9ea28d51dd62c9eace7ddc99bf937db1decbb)
-FetchContent_MakeAvailable(Yttrium)
+FetchContent_Declare(Seir GIT_REPOSITORY https://github.com/blagodarin/seir.git GIT_TAG df1ffa517e1b3f1334f52b1c82bdfb7af5e75aaf)
+FetchContent_MakeAvailable(Seir)
 
 seir_defaults()
 
-source_group("src" REGULAR_EXPRESSION "src/")
-source_group("src/screens" REGULAR_EXPRESSION "src/screens/")
-add_executable(Blocks WIN32
+set(SOURCES
 	src/game.cpp
 	src/game.hpp
 	src/graphics.cpp
@@ -46,7 +44,9 @@ add_executable(Blocks WIN32
 	src/textures.cpp
 	src/textures.hpp
 	)
-target_link_libraries(Blocks PRIVATE Seir::app Seir::audio Seir::base Seir::data Seir::graphics Seir::gui Seir::image Seir::math Seir::renderer Seir::u8main)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
+add_executable(Blocks WIN32 ${SOURCES})
+target_link_libraries(Blocks PRIVATE Seir::app Seir::audio Seir::base Seir::data Seir::graphics Seir::gui Seir::image Seir::io Seir::math Seir::renderer Seir::u8main)
 seir_target(Blocks STATIC_RUNTIME ON)
 
 if(WIN32)
@@ -56,8 +56,7 @@ if(WIN32)
 	source_group("" FILES blocks.rc.in ${CMAKE_CURRENT_BINARY_DIR}/blocks.rc)
 endif()
 
-yttrium_target_package(Blocks
-	GROUP "embed"
+seir_target_pack(Blocks
 	OUTPUT blocks.yp
 	INDEX data/index.st
 	EMBED)

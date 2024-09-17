@@ -155,33 +155,21 @@ GameLogic::Field::Field()
 			blocks[y][x] = Figure::None;
 }
 
-int GameLogic::Field::collapse()
+int GameLogic::Field::collapse_full_rows()
 {
 	int result = 0;
-	for (int x = 0; x < Width; ++x)
+	for (int row = Field::Height - 1; row >= 0; --row)
 	{
-		int y = 0;
-		int consecutive = 0;
-		const auto check = [&] {
-			if (consecutive < Width)
-				return false;
-			++result;
-			for (int i = 1; i <= consecutive; ++i)
-				blocks[y - i][x] = Figure::None;
-			return true;
-		};
-		for (; y < Height; ++y)
+		int cells_filled = 0;
+		for (int column = 0; column < Field::Width; ++column)
+			cells_filled += (blocks[row][column] != Figure::None);
+		if (cells_filled == Width)
 		{
-			if (blocks[y][x] == Figure::None)
-			{
-				if (check())
-					break;
-				consecutive = 0;
-			}
-			else
-				++consecutive;
+			for (int y = row; y < Field::Height; ++y)
+				for (int x = 0; x < Field::Width; ++x)
+					blocks[y][x] = blocks[y + 1][x];
+			++result;
 		}
-		check();
 	}
 	return result;
 }
@@ -508,12 +496,11 @@ void GameLogic::process_fixation(int* frames)
 
 void GameLogic::update_score()
 {
-	_score += _acceleration_bonus / PointsPerRow;
-	_acceleration_bonus = 0;
-	const auto collapsed = _field.collapse();
-	_score += collapsed * (collapsed + 1) * 50 * _level;
+	const auto collapsed = _field.collapse_full_rows();
+	_score += (collapsed * (collapsed + 1) * 50 + _acceleration_bonus / PointsPerRow) * _level;
 	_lines += collapsed;
 	_level += _lines / Field::Width - (_lines - collapsed) / Field::Width;
+	_acceleration_bonus = 0;
 }
 
 int GameLogic::process_horizontal_movement(int frames)

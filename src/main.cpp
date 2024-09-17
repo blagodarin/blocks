@@ -9,12 +9,12 @@
 #include <seir_app/app.hpp>
 #include <seir_app/events.hpp>
 #include <seir_app/window.hpp>
-#include <seir_data/blob.hpp>
 #include <seir_data/storage.hpp>
 #include <seir_gui/context.hpp>
 #include <seir_gui/font.hpp>
 #include <seir_gui/frame.hpp>
 #include <seir_image/image.hpp>
+#include <seir_io/blob.hpp>
 #include <seir_renderer/2d.hpp>
 #include <seir_renderer/renderer.hpp>
 #include <seir_u8main/u8main.hpp>

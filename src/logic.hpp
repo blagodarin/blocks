@@ -71,7 +71,7 @@ public:
 
 		Field();
 
-		int collapse();
+		int collapse_full_rows();
 		bool is_overflown() const;
 		bool fit(Figure&) const;
 		void put_figure(const Figure&);
