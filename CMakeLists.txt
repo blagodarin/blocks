@@ -11,7 +11,7 @@ set(SEIR_IMAGE_PNG ON) # For screenshots (not JPEG for smaller binary size).
 set(SEIR_STATIC_RUNTIME ON)
 
 include(FetchContent)
-FetchContent_Declare(Seir GIT_REPOSITORY https://github.com/blagodarin/seir.git GIT_TAG df1ffa517e1b3f1334f52b1c82bdfb7af5e75aaf)
+FetchContent_Declare(Seir GIT_REPOSITORY https://github.com/blagodarin/seir.git GIT_TAG f8c3340a6dc3f87054c636a2b7b02c9810d73ecd)
 FetchContent_MakeAvailable(Seir)
 
 seir_defaults()
@@ -46,7 +46,7 @@ set(SOURCES
 	)
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
 add_executable(Blocks WIN32 ${SOURCES})
-target_link_libraries(Blocks PRIVATE Seir::app Seir::audio Seir::base Seir::data Seir::graphics Seir::gui Seir::image Seir::io Seir::math Seir::renderer Seir::u8main)
+target_link_libraries(Blocks PRIVATE Seir::audio Seir::gui Seir::image Seir::io Seir::package Seir::renderer Seir::u8main)
 seir_target(Blocks STATIC_RUNTIME ON)
 
 if(WIN32)
